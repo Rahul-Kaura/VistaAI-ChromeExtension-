@@ -1,0 +1,95 @@
+.App {
+  text-align: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.header {
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: #1976d2;
+  color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+.header p {
+  margin: 10px 0 0;
+  font-size: 1.2em;
+  opacity: 0.9;
+}
+
+/* Chat widget customization */
+.rcw-widget-container {
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.rcw-message {
+  margin: 10px 0;
+}
+
+.rcw-client {
+  background-color: #1976d2;
+  color: white;
+}
+
+.rcw-response {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.rcw-sender {
+  background-color: #1976d2;
+  color: white;
+  border-radius: 20px;
+  padding: 8px 16px;
+  margin: 5px 0;
+}
+
+.rcw-launcher {
+  background-color: #1976d2;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
