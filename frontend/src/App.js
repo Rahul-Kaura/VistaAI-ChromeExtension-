@@ -35,16 +35,9 @@ function App() {
   const [currentStocks, setCurrentStocks] = useState([]);
 
   useEffect(() => {
-    if (messages.length === 0) {
+    if (!welcomeShown.current) {
       setMessages([{
         text: 'Welcome to AI Assistant! How can I help you today?',
-        sender: 'ai',
-        avatar: defaultAvatar
-      }]);
-    }
-    if (!welcomeShown.current) {
-      setMessages(prev => [...prev, {
-        text: 'Welcome to Better ChatGPT! How can I help you today?',
         sender: 'ai',
         avatar: defaultAvatar
       }]);
@@ -62,7 +55,7 @@ function App() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages.length]);
 
   const generateRandomWallpaper = () => {
     // Using Lorem Picsum for random images without an API key
