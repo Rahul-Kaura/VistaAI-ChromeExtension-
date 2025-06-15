@@ -20,7 +20,7 @@ const theme = createTheme({
 
 const ALPHA_VANTAGE_API_KEY = 'OOPIZLORS9B08GN4';
 const STOCK_SYMBOLS = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'META'];
-const API_URL = 'http://localhost:8000';
+const API_ENDPOINT = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -99,49 +99,33 @@ function App() {
     }
   };
 
-  const handleNewUserMessage = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
-    const userMessage = {
-      text: inputMessage,
-      sender: 'user',
-      avatar: defaultAvatar
-    };
-
+    const userMessage = { role: 'user', content: inputMessage };
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${API_URL}/chat`, {
-        message: inputMessage
+      const response = await fetch(`${API_ENDPOINT}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: inputMessage }),
       });
-      
-      setMessages(prev => [...prev, {
-        text: response.data.response,
-        sender: 'ai',
-        avatar: defaultAvatar
-      }]);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
     } catch (error) {
       console.error('Error:', error);
-      let errorMessage = 'Sorry, I encountered an error. Please try again.';
-      
-      if (error.response) {
-        if (error.response.status === 401) {
-          errorMessage = 'Authentication error. Please check the API key.';
-        } else if (error.response.status === 500) {
-          errorMessage = 'Server error. Please try again later.';
-        }
-      } else if (error.request) {
-        errorMessage = 'Unable to connect to the server. Please check your connection.';
-      }
-      
-      setMessages(prev => [...prev, {
-        text: errorMessage,
-        sender: 'ai',
-        avatar: defaultAvatar
-      }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -361,7 +345,7 @@ function App() {
 
             <Box
               component="form"
-              onSubmit={handleNewUserMessage}
+              onSubmit={handleSubmit}
               sx={{
                 p: 2,
                 borderTop: '1px solid rgba(255, 255, 255, 0.1)',

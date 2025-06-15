@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 import logging
 import json
+from typing import List, Optional
+import openai
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -14,25 +16,31 @@ logger = logging.getLogger(__name__)
 # Load environment variables
 load_dotenv()
 
+# Configure OpenAI
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 app = FastAPI(title="AI Assistant API")
 
-# Get environment variables
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-logger.info(f"API Key loaded: {'Yes' if OPENAI_API_KEY else 'No'}")
-logger.info(f"API Key length: {len(OPENAI_API_KEY) if OPENAI_API_KEY else 0}")
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
-
 # Configure CORS
+origins = [
+    "http://localhost:3000",  # React development server
+    "http://localhost:8000",  # FastAPI development server
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000",
+    "https://ai-pitch-advisor.vercel.app",  # Production frontend
+    "*"  # Allow all origins during development
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Initialize OpenAI client
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = OpenAI(api_key=openai.api_key)
 
 class ChatRequest(BaseModel):
     message: str
