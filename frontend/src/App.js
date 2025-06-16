@@ -96,15 +96,21 @@ function App() {
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
-    const userMessage = { text: inputMessage, sender: 'user', avatar: defaultAvatar };
-    setMessages(prev => [...prev, userMessage]);
+    const userMessage = {
+      text: inputMessage,
+      sender: 'user',
+      avatar: 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
     setInputMessage('');
     setIsLoading(true);
 
     try {
-      const response = await axios.post(`${API_ENDPOINT}/chat`, {
-        message: inputMessage
-      });
+      const response = await axios.post(
+        process.env.REACT_APP_API_URL || 'http://localhost:8000/chat',
+        { message: inputMessage }
+      );
 
       const aiMessage = { 
         text: response.data.response, 
