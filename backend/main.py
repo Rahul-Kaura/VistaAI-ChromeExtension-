@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from openai import OpenAI, RateLimitError
+from openai import OpenAI, RateLimitError, APIError
 import os
 from dotenv import load_dotenv
 import logging
@@ -71,14 +71,28 @@ async def chat(request: ChatRequest):
             return ChatResponse(response=response_content)
             
         except RateLimitError as rate_limit_error:
-            logger.error(f"Rate limit error: {str(rate_limit_error)}")
+            error_message = str(rate_limit_error)
+            logger.error(f"Rate limit error: {error_message}")
+            
+            if "insufficient_quota" in error_message.lower():
+                return ChatResponse(
+                    response="I apologize, but my service quota has been exceeded. Please contact the administrator to resolve this issue."
+                )
+            else:
+                return ChatResponse(
+                    response="I apologize, but I'm currently experiencing high traffic. Please try again in a few moments."
+                )
+                
+        except APIError as api_error:
+            logger.error(f"OpenAI API Error: {str(api_error)}")
             return ChatResponse(
-                response="I apologize, but I'm currently experiencing high traffic. Please try again in a few moments."
+                response="I apologize, but I'm having trouble connecting to my brain right now. Please try again in a moment."
             )
+            
         except Exception as openai_error:
             logger.error(f"OpenAI Error: {str(openai_error)}")
             return ChatResponse(
-                response="I apologize, but I'm having trouble connecting to my brain right now. Please try again in a moment."
+                response="I apologize, but I'm having trouble processing your request. Please try again in a moment."
             )
             
     except Exception as e:
