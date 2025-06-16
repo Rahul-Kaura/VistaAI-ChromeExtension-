@@ -55,7 +55,7 @@ function App() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages.length]);
+  }, [messages]);
 
   const generateRandomWallpaper = () => {
     // Using Lorem Picsum for random images without an API key
@@ -96,29 +96,30 @@ function App() {
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
-    const userMessage = { role: 'user', content: inputMessage };
+    const userMessage = { text: inputMessage, sender: 'user', avatar: defaultAvatar };
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_ENDPOINT}/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: inputMessage }),
+      const response = await axios.post(`${API_ENDPOINT}/chat`, {
+        message: inputMessage
       });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+      const aiMessage = { 
+        text: response.data.response, 
+        sender: 'ai', 
+        avatar: defaultAvatar 
+      };
+      setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error('Error:', error);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
+      const errorMessage = { 
+        text: 'Sorry, I encountered an error. Please try again.', 
+        sender: 'ai', 
+        avatar: defaultAvatar 
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -141,12 +142,14 @@ function App() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        paddingTop: '10vh',
+        paddingTop: isOpen ? '0' : '10vh',
         backgroundColor: 'rgb(52, 53, 65)',
         backgroundImage: backgroundUrl ? `url(${backgroundUrl})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
         <h1 style={{
           color: 'rgb(236, 236, 241)',
@@ -270,67 +273,75 @@ function App() {
         {isOpen && (
           <Paper
             elevation={3}
-            sx={{
+            style={{
               position: 'fixed',
               top: 0,
+              left: 0,
               right: 0,
-              width: '100vw',
-              height: '100vh',
+              bottom: 0,
+              width: '100%',
+              height: '100%',
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'rgb(52, 53, 65)',
-              boxShadow: '-2px 0 10px rgba(0, 0, 0, 0.2)',
-              zIndex: 9999,
+              borderRadius: '0',
+              overflow: 'hidden',
+              zIndex: 1000
             }}
           >
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              p: 2,
-              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-            }}>
-              <Typography variant="h6" sx={{ color: 'white', fontSize: '1.5rem' }}>
-                AI Assistant
-              </Typography>
-              <IconButton onClick={() => setIsOpen(false)} sx={{ color: 'white' }}>
-                <CloseIcon />
+            <Box
+              style={{
+                padding: '10px',
+                backgroundColor: 'rgb(64, 65, 79)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Typography variant="h6" style={{ color: 'white' }}>
+                  AI Assistant
+                </Typography>
+                {isLoading && (
+                  <Typography variant="body2" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                    AI is typing...
+                  </Typography>
+                )}
+              </div>
+              <IconButton onClick={() => setIsOpen(false)} size="small">
+                <CloseIcon style={{ color: 'white' }} />
               </IconButton>
             </Box>
 
-            <List sx={{
-              flexGrow: 1,
-              overflow: 'auto',
-              p: 2,
-              backgroundColor: 'rgb(52, 53, 65)',
-              maxWidth: '1200px',
-              margin: '0 auto',
-              width: '100%',
-            }}>
+            <List
+              style={{
+                flex: 1,
+                overflow: 'auto',
+                padding: '10px',
+                backgroundColor: 'rgb(52, 53, 65)',
+              }}
+            >
               {messages.map((message, index) => (
                 <ListItem
                   key={index}
-                  sx={{
+                  style={{
                     flexDirection: message.sender === 'user' ? 'row-reverse' : 'row',
-                    alignItems: 'flex-start',
-                    mb: 2,
+                    padding: '8px',
                   }}
                 >
                   <ListItemAvatar>
-                    <Avatar src={message.avatar} sx={{ width: 40, height: 40 }} />
+                    <Avatar src={message.avatar} />
                   </ListItemAvatar>
-                  <Paper
-                    elevation={1}
-                    sx={{
-                      p: 2,
-                      maxWidth: '70%',
-                      backgroundColor: message.sender === 'user' ? '#4CAF50' : 'rgb(68, 70, 84)',
-                      color: 'white',
-                      borderRadius: 2,
+                  <ListItemText
+                    primary={message.text}
+                    style={{
+                      backgroundColor: message.sender === 'user' ? 'rgb(64, 65, 79)' : 'rgb(68, 70, 84)',
+                      padding: '10px',
+                      borderRadius: '10px',
+                      maxWidth: '80%',
+                      margin: message.sender === 'user' ? '0 10px 0 0' : '0 0 0 10px',
                     }}
-                  >
-                    <ListItemText primary={message.text} />
-                  </Paper>
+                  />
                 </ListItem>
               ))}
               <div ref={messagesEndRef} />
@@ -339,15 +350,11 @@ function App() {
             <Box
               component="form"
               onSubmit={handleSubmit}
-              sx={{
-                p: 2,
-                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-                backgroundColor: 'rgb(52, 53, 65)',
+              style={{
+                padding: '10px',
+                backgroundColor: 'rgb(64, 65, 79)',
                 display: 'flex',
-                gap: 1,
-                maxWidth: '1200px',
-                margin: '0 auto',
-                width: '100%',
+                gap: '10px',
               }}
             >
               <TextField
@@ -356,34 +363,19 @@ function App() {
                 placeholder="Type your message..."
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    color: 'white',
-                    '& fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.1)',
-                    },
-                    '&:hover fieldset': {
-                      borderColor: 'rgba(255, 255, 255, 0.2)',
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#4CAF50',
-                    },
-                  },
+                disabled={isLoading}
+                style={{
+                  backgroundColor: 'rgb(52, 53, 65)',
+                  borderRadius: '5px',
+                }}
+                InputProps={{
+                  style: { color: 'white' },
                 }}
               />
               <IconButton
                 type="submit"
                 color="primary"
                 disabled={isLoading || !inputMessage.trim()}
-                sx={{
-                  backgroundColor: '#4CAF50',
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#45a049',
-                  },
-                  width: '48px',
-                  height: '48px',
-                }}
               >
                 <SendIcon />
               </IconButton>
