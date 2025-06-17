@@ -1,6 +1,6 @@
-# AI Pitch Advisor
+# AI/Stock Advisor(Fine Tuned)
 
-A sophisticated AI-powered application that combines stock market analysis with general AI assistance capabilities.
+A sophisticated AI-powered application that combines stock market analysis with general AI assistance capabilities, featuring fine-tuned models for specialized responses.
 
 ## Features
 
