@@ -22,21 +22,12 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 app = FastAPI(title="AI Assistant API")
 
 # Configure CORS
-origins = [
-    "http://localhost:3000",  # React development server
-    "http://localhost:8000",  # FastAPI development server
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:8000",
-    "https://ai-pitch-advisor.vercel.app",  # Production frontend
-    "*"  # Allow all origins during development
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # Allows all origins
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
 )
 
 # Initialize OpenAI client
@@ -44,6 +35,7 @@ client = OpenAI(api_key=openai.api_key)
 
 class ChatRequest(BaseModel):
     message: str
+    context: str = "stock"  # Can be either "stock" or "general"
 
 class ChatResponse(BaseModel):
     response: str
@@ -52,14 +44,22 @@ class ChatResponse(BaseModel):
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     try:
-        logger.info(f"Received message: {request.message}")
+        logger.info(f"Received message: {request.message} in context: {request.context}")
+        
+        # Select model and system message based on context
+        if request.context == "stock":
+            model = "ft:gpt-3.5-turbo-0125:personal:stock-advisor:BjVreaRO"
+            system_message = "You are a knowledgeable stock market advisor. Provide accurate and helpful information about stocks, investing, and market analysis while maintaining appropriate disclaimers about financial advice."
+        else:  # general context
+            model = "gpt-3.5-turbo"
+            system_message = "You are a helpful AI assistant. Provide accurate and helpful information while maintaining a friendly and professional tone."
         
         # Create chat completion
         try:
             response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model=model,
                 messages=[
-                    {"role": "system", "content": "You are an AI assistant, helping users with their questions."},
+                    {"role": "system", "content": system_message},
                     {"role": "user", "content": request.message}
                 ],
                 temperature=0.7,

@@ -19,7 +19,14 @@ const theme = createTheme({
 });
 
 const ALPHA_VANTAGE_API_KEY = 'OOPIZLORS9B08GN4';
-const STOCK_SYMBOLS = ['AAPL', 'GOOGL', 'MSFT', 'AMZN', 'TSLA', 'META'];
+const ALL_STOCK_SYMBOLS = [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "BRK.B", "TSLA", "UNH", "JNJ",
+    "JPM", "V", "PG", "MA", "HD", "CVX", "MRK", "ABBV", "PFE", "KO",
+    "BAC", "PEP", "COST", "TMO", "DHR", "CSCO", "VZ", "ADBE", "CRM", "NEE",
+    "CMCSA", "INTC", "WMT", "QCOM", "DIS", "NFLX", "AMD", "PM", "UPS", "IBM",
+    "RTX", "MMM", "SBUX", "BA", "CAT", "GE", "F", "GM", "UBER", "LYFT"
+];
+const STOCKS_PER_VIEW = 9;
 const API_ENDPOINT = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 function App() {
@@ -33,21 +40,51 @@ function App() {
   const [backgroundUrl, setBackgroundUrl] = useState('');
   const [showStockWidget, setShowStockWidget] = useState(false);
   const [currentStocks, setCurrentStocks] = useState([]);
+  const [stockIndex, setStockIndex] = useState(0);
+  const [isStockMode, setIsStockMode] = useState(true);
+  const [context, setContext] = useState('stock');
+  const stockDataRef = useRef({}); // Cache for stock data
 
   useEffect(() => {
     if (!welcomeShown.current) {
       setMessages([{
-        text: 'Welcome to AI Assistant! How can I help you today?',
+        text: isStockMode 
+          ? 'Welcome to Stock Market Advisor! I can help you with stock analysis, market trends, and investment strategies. What would you like to know?'
+          : 'Welcome to General AI Assistant! I can help you with any questions you have. What would you like to know?',
         sender: 'ai',
         avatar: defaultAvatar
       }]);
       welcomeShown.current = true;
     }
     // Fetch real stock prices initially and then every 30 seconds
-    generateStockPrices();
-    const interval = setInterval(generateStockPrices, 30000); // Update every 30 seconds
-    return () => clearInterval(interval);
-  }, []);
+    if (isStockMode) {
+      generateStockPrices();
+      const interval = setInterval(generateStockPrices, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isStockMode]);
+
+  // Add new effect for cycling through stocks
+  useEffect(() => {
+    if (showStockWidget) {
+      const cycleInterval = setInterval(() => {
+        setStockIndex((prevIndex) => {
+          const newIndex = (prevIndex + STOCKS_PER_VIEW) % ALL_STOCK_SYMBOLS.length;
+          console.log('Cycling stocks, new index:', newIndex);
+          return newIndex;
+        });
+      }, 10000);
+      return () => clearInterval(cycleInterval);
+    }
+  }, [showStockWidget]);
+
+  // Separate effect for fetching stock data
+  useEffect(() => {
+    if (showStockWidget) {
+      const fetchInterval = setInterval(generateStockPrices, 30000);
+      return () => clearInterval(fetchInterval);
+    }
+  }, [showStockWidget]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -64,25 +101,41 @@ function App() {
 
   const generateStockPrices = async () => {
     try {
+      const currentSymbols = ALL_STOCK_SYMBOLS.slice(stockIndex, stockIndex + STOCKS_PER_VIEW);
       const stocks = await Promise.all(
-        STOCK_SYMBOLS.map(async (symbol) => {
+        currentSymbols.map(async (symbol) => {
+          // Check cache first
+          if (stockDataRef.current[symbol] && 
+              Date.now() - stockDataRef.current[symbol].timestamp < 30000) {
+            return stockDataRef.current[symbol].data;
+          }
+
           const response = await axios.get(
             `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`
           );
           const data = response.data['Global Quote'];
-          return {
+          const stockData = {
             ticker: symbol,
             price: parseFloat(data['05. price']).toFixed(2),
             change: parseFloat(data['09. change']).toFixed(2),
             changePercent: data['10. change percent'].replace('%', '')
           };
+
+          // Update cache
+          stockDataRef.current[symbol] = {
+            data: stockData,
+            timestamp: Date.now()
+          };
+
+          return stockData;
         })
       );
       setCurrentStocks(stocks);
     } catch (error) {
       console.error('Error fetching stock data:', error);
       // Fallback to mock data if API fails
-      const mockStocks = STOCK_SYMBOLS.map(ticker => ({
+      const currentSymbols = ALL_STOCK_SYMBOLS.slice(stockIndex, stockIndex + STOCKS_PER_VIEW);
+      const mockStocks = currentSymbols.map(ticker => ({
         ticker: ticker,
         price: (Math.random() * (500 - 100) + 100).toFixed(2),
         change: (Math.random() * (10 - (-5)) + (-5)).toFixed(2),
@@ -91,6 +144,27 @@ function App() {
       setCurrentStocks(mockStocks);
     }
   };
+
+  // Effect to update displayed stocks when index changes
+  useEffect(() => {
+    if (showStockWidget) {
+      const currentSymbols = ALL_STOCK_SYMBOLS.slice(stockIndex, stockIndex + STOCKS_PER_VIEW);
+      const stocks = currentSymbols.map(symbol => {
+        if (stockDataRef.current[symbol]) {
+          return stockDataRef.current[symbol].data;
+        }
+        // If no cached data, fetch it immediately
+        generateStockPrices();
+        return {
+          ticker: symbol,
+          price: '...',
+          change: '0.00',
+          changePercent: '0.00'
+        };
+      });
+      setCurrentStocks(stocks);
+    }
+  }, [stockIndex, showStockWidget]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -109,7 +183,10 @@ function App() {
     try {
       const response = await axios.post(
         process.env.REACT_APP_API_URL || 'http://localhost:8000/chat',
-        { message: inputMessage }
+        { 
+          message: inputMessage,
+          context: isStockMode ? "stock" : "general"
+        }
       );
 
       const aiMessage = { 
@@ -133,10 +210,31 @@ function App() {
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
+    if (!isOpen) {
+      // Close stock widget when opening chat
+      setShowStockWidget(false);
+    }
   };
 
   const toggleStockWidget = () => {
     setShowStockWidget(!showStockWidget);
+    if (!showStockWidget) {
+      // Fetch initial data when showing the widget
+      generateStockPrices();
+    }
+  };
+
+  const toggleMode = () => {
+    setIsStockMode(!isStockMode);
+    setShowStockWidget(false);
+    setMessages([{
+      text: !isStockMode 
+        ? 'Welcome to Stock Market Advisor! I can help you with stock analysis, market trends, and investment strategies. What would you like to know?'
+        : 'Welcome to General AI Assistant! I can help you with any questions you have. What would you like to know?',
+      sender: 'ai',
+      avatar: defaultAvatar
+    }]);
+    welcomeShown.current = true;
   };
 
   return (
@@ -157,18 +255,20 @@ function App() {
         position: 'relative',
         overflow: 'hidden'
       }}>
-        <h1 style={{
-          color: 'rgb(236, 236, 241)',
-          marginBottom: '2rem',
-          textAlign: 'center',
-          fontSize: '3.5rem',
-          fontWeight: 'bold',
-          opacity: backgroundUrl ? '0.6' : '1',
-          transition: 'opacity 0.3s ease-in-out',
-          display: isOpen ? 'none' : 'block',
-        }}>
-          AI Assistant
-        </h1>
+        <header className="App-header">
+          <h1 style={{
+            color: 'rgb(236, 236, 241)',
+            marginBottom: '2rem',
+            textAlign: 'center',
+            fontSize: '3.5rem',
+            fontWeight: 'bold',
+            opacity: backgroundUrl ? '0.6' : '1',
+            transition: 'opacity 0.3s ease-in-out',
+            display: isOpen ? 'none' : 'block',
+          }}>
+            AI/Stock Assistant
+          </h1>
+        </header>
         <button
           onClick={() => setIsOpen(!isOpen)}
           style={{
@@ -176,8 +276,8 @@ function App() {
             color: 'white',
             border: 'none',
             borderRadius: '50%',
-            width: '220px',
-            height: '220px',
+            width: '280px',
+            height: '280px',
             cursor: 'pointer',
             boxShadow: 'none',
             display: isOpen ? 'none' : 'flex',
@@ -194,22 +294,22 @@ function App() {
             src={defaultAvatar}
             alt="Chat"
             style={{ 
-              width: '140px', 
-              height: '140px',
+              width: '180px', 
+              height: '180px',
               objectFit: 'cover',
               clipPath: 'circle(50% at 50% 50%)'
             }}
           />
+          <span style={{
+            position: 'absolute',
+            bottom: '30px',
+            fontSize: '1.4rem',
+            color: 'white',
+            textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+          }}>
+            (FineTuned Chatbot V1)
+          </span>
         </button>
-        <div style={{
-          color: 'white',
-          fontSize: '1.2rem',
-          marginBottom: '2rem',
-          opacity: '1',
-          fontWeight: '500'
-        }}>
-          (Personal Chatbot V1)
-        </div>
 
         <div style={{
           position: 'fixed',
@@ -295,100 +395,121 @@ function App() {
               zIndex: 1000
             }}
           >
-            <Box
-              style={{
-                padding: '10px',
+            <div className="chat-container" style={{
+              display: isOpen ? 'flex' : 'none',
+              flexDirection: 'column',
+              height: '100vh',
+              backgroundColor: 'rgb(52, 53, 65)',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1000,
+            }}>
+              <div className="chat-header" style={{
+                padding: '1rem',
                 backgroundColor: 'rgb(64, 65, 79)',
+                borderBottom: '1px solid rgb(86, 88, 105)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Typography variant="h6" style={{ color: 'white' }}>
-                  AI Assistant
-                </Typography>
-                {isLoading && (
-                  <Typography variant="body2" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-                    AI is typing...
-                  </Typography>
-                )}
-              </div>
-              <IconButton onClick={() => setIsOpen(false)} size="small">
-                <CloseIcon style={{ color: 'white' }} />
-              </IconButton>
-            </Box>
-
-            <List
-              style={{
-                flex: 1,
-                overflow: 'auto',
-                padding: '10px',
-                backgroundColor: 'rgb(52, 53, 65)',
-              }}
-            >
-              {messages.map((message, index) => (
-                <ListItem
-                  key={index}
-                  style={{
-                    flexDirection: message.sender === 'user' ? 'row-reverse' : 'row',
-                    padding: '8px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <h2 style={{ margin: 0, color: 'white' }}>{isStockMode ? 'Stock Assistant' : 'AI Assistant'}</h2>
+                  <Typography variant="body2" style={{ 
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    backgroundColor: isStockMode ? 'rgba(76, 175, 80, 0.2)' : 'rgba(33, 150, 243, 0.2)',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    fontSize: '0.8rem',
+                    cursor: 'pointer'
                   }}
-                >
-                  <ListItemAvatar>
-                    <Avatar src={message.avatar} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={message.text}
-                    style={{
-                      backgroundColor: message.sender === 'user' ? 'rgb(64, 65, 79)' : 'rgb(68, 70, 84)',
-                      padding: '10px',
-                      borderRadius: '10px',
-                      maxWidth: '80%',
-                      margin: message.sender === 'user' ? '0 10px 0 0' : '0 0 0 10px',
-                    }}
-                  />
-                </ListItem>
-              ))}
-              <div ref={messagesEndRef} />
-            </List>
+                  onClick={toggleMode}>
+                    {isStockMode ? 'Stock Market Mode' : 'General AI Mode'}
+                  </Typography>
+                  {isLoading && (
+                    <Typography variant="body2" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                      AI is typing...
+                    </Typography>
+                  )}
+                </div>
+                <IconButton onClick={() => setIsOpen(false)} size="small">
+                  <CloseIcon style={{ color: 'white' }} />
+                </IconButton>
+              </div>
 
-            <Box
-              component="form"
-              onSubmit={handleSubmit}
-              style={{
-                padding: '10px',
-                backgroundColor: 'rgb(64, 65, 79)',
-                display: 'flex',
-                gap: '10px',
-              }}
-            >
-              <TextField
-                fullWidth
-                variant="outlined"
-                placeholder="Type your message..."
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                disabled={isLoading}
+              <List
                 style={{
+                  flex: 1,
+                  overflow: 'auto',
+                  padding: '10px',
                   backgroundColor: 'rgb(52, 53, 65)',
-                  borderRadius: '5px',
                 }}
-                InputProps={{
-                  style: { color: 'white' },
-                }}
-              />
-              <IconButton
-                type="submit"
-                color="primary"
-                disabled={isLoading || !inputMessage.trim()}
               >
-                <SendIcon />
-              </IconButton>
-            </Box>
+                {messages.map((message, index) => (
+                  <ListItem
+                    key={index}
+                    style={{
+                      flexDirection: message.sender === 'user' ? 'row-reverse' : 'row',
+                      padding: '8px',
+                    }}
+                  >
+                    <ListItemAvatar>
+                      <Avatar src={message.avatar} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={message.text}
+                      style={{
+                        backgroundColor: message.sender === 'user' ? 'rgb(64, 65, 79)' : 'rgb(68, 70, 84)',
+                        padding: '10px',
+                        borderRadius: '10px',
+                        maxWidth: '80%',
+                        margin: message.sender === 'user' ? '0 10px 0 0' : '0 0 0 10px',
+                      }}
+                    />
+                  </ListItem>
+                ))}
+                <div ref={messagesEndRef} />
+              </List>
+
+              <Box
+                component="form"
+                onSubmit={handleSubmit}
+                style={{
+                  padding: '10px',
+                  backgroundColor: 'rgb(64, 65, 79)',
+                  display: 'flex',
+                  gap: '10px',
+                }}
+              >
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  placeholder="Type your message..."
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  disabled={isLoading}
+                  style={{
+                    backgroundColor: 'rgb(52, 53, 65)',
+                    borderRadius: '5px',
+                  }}
+                  InputProps={{
+                    style: { color: 'white' },
+                  }}
+                />
+                <IconButton
+                  type="submit"
+                  color="primary"
+                  disabled={isLoading || !inputMessage.trim()}
+                >
+                  <SendIcon />
+                </IconButton>
+              </Box>
+            </div>
           </Paper>
         )}
-        {showStockWidget && (
+        {showStockWidget && !isOpen && (
           <div style={{
             position: 'fixed',
             bottom: '20px',
