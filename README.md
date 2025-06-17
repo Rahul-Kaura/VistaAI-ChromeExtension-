@@ -1,185 +1,134 @@
-# AI Assistant - Standalone Chat Application
+# AI Pitch Advisor
 
-A modern, full-screen chat interface powered by OpenAI's GPT model.
+A sophisticated AI-powered application that combines stock market analysis with general AI assistance capabilities.
 
 ## Features
-- Clean, modern UI with full-screen chat interface
-- Real-time chat with AI assistant
-- Responsive design
-- Customizable appearance
-- Background wallpaper option
 
-## Local Development Setup
+### Dual-Mode AI Assistant
+- **Stock Market Mode**: Specialized in providing professional financial analysis and stock market insights
+- **General AI Mode**: Friendly, conversational AI assistant for general queries and assistance
 
-### Backend Setup
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
+### Live Stock Market Ticker
+- Real-time stock price updates for 50 major companies
+- Displays 9 stocks at a time with automatic cycling every 10 seconds
+- Shows current price, change, and percentage change
+- Color-coded indicators for positive (green) and negative (red) changes
+- Updates prices every 30 seconds
+- Automatically hides when chat is open
 
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   ```
+### Dynamic Background
+- Random wallpaper generation feature
+- Toggle between default and random backgrounds
+- Smooth transitions between backgrounds
 
-3. Activate the virtual environment:
-   - On Windows:
-     ```bash
-     .\venv\Scripts\activate
-     ```
-   - On macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
+### Chat Interface
+- Clean, modern chat interface
+- Real-time message updates
+- Loading indicators for AI responses
+- Easy mode switching between Stock and General AI
+- Automatic welcome messages based on selected mode
 
-4. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Stock Market Analysis Features
+- Professional financial analysis
+- Market trends and insights
+- Investment strategies
+- Stock-specific metrics and analysis
+- Sector-wise market analysis
 
-5. Create a `.env` file in the backend directory with:
-   ```
-   OPENAI_API_KEY=your_api_key_here
-   CORS_ORIGINS=http://localhost:3000
-   ```
+### General AI Assistant Features
+- Friendly, conversational tone
+- Natural language understanding
+- Context-aware responses
+- Helpful suggestions and recommendations
+- Engaging dialogue capabilities
 
-6. Start the backend server:
-   ```bash
-   uvicorn main:app --reload
-   ```
-   The backend will run on http://localhost:8000
+## Technical Details
 
-### Frontend Setup
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
+### Frontend
+- Built with React.js
+- Material-UI components
+- Real-time stock data integration with Alpha Vantage API
+- Responsive design for all screen sizes
 
+### Backend
+- Python-based backend
+- OpenAI API integration
+- Fine-tuned models for both stock market and general assistance
+- Efficient data caching and management
+
+### API Integration
+- Alpha Vantage API for real-time stock data
+- OpenAI API for AI responses
+- Rate limiting and error handling
+
+## Getting Started
+
+1. Clone the repository
 2. Install dependencies:
    ```bash
+   # Backend
+   cd backend
+   pip install -r requirements.txt
+
+   # Frontend
+   cd frontend
    npm install
    ```
-
-3. Start the development server:
+3. Set up environment variables:
+   - Create a `.env` file in the backend directory
+   - Add your API keys:
+     ```
+     OPENAI_API_KEY=your_openai_api_key
+     ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
+     ```
+4. Start the application:
    ```bash
+   # Backend
+   cd backend
+   python main.py
+
+   # Frontend
+   cd frontend
    npm start
    ```
-   The frontend will run on http://localhost:3000
 
 ## Usage
-1. Open http://localhost:3000 in your browser
-2. Type your message in the input field
-3. Press Enter or click the send button to get AI responses
 
-## API Endpoints
-- `POST /chat`: Send messages to the AI
-- `GET /health`: Check API health status
+1. **Stock Market Mode**
+   - Click "Stock Market Mode" to access financial analysis
+   - Ask questions about stocks, market trends, or investment strategies
+   - View real-time stock updates in the ticker
 
-## Deployment Instructions
+2. **General AI Mode**
+   - Click "General AI Mode" for general assistance
+   - Engage in natural conversation
+   - Get helpful responses to various queries
 
-### Prerequisites
-- Node.js (v14 or higher)
-- Python 3.8 or higher
-- OpenAI API key
+3. **Stock Ticker**
+   - Click "Show Stock Updates" to view the live ticker
+   - Watch as it cycles through different stocks
+   - Monitor price changes in real-time
 
-### Backend Setup
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
+4. **Background**
+   - Click "Generate Random Wallpaper" for a new background
+   - Toggle between default and random backgrounds
 
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+## Recent Updates
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+- Added dual-mode AI assistant functionality
+- Implemented live stock market ticker with cycling display
+- Added dynamic background generation
+- Enhanced chat interface with mode switching
+- Improved stock market analysis capabilities
+- Added friendly, conversational general AI mode
+- Implemented automatic hiding of stock ticker when chat is open
+- Added real-time price updates for stocks
+- Enhanced UI/UX with smooth transitions and loading indicators
 
-4. Create a `.env` file in the backend directory:
-   ```
-   OPENAI_API_KEY=your_api_key_here
-   ```
+## Contributing
 
-5. Start the backend server:
-   ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8000
-   ```
-
-### Frontend Setup
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Create a `.env` file in the frontend directory:
-   ```
-   REACT_APP_BACKEND_URL=http://localhost:8000
-   ```
-
-4. Start the development server:
-   ```bash
-   npm start
-   ```
-
-### Deployment Options
-
-#### Option 1: Deploy to Vercel (Frontend) + Railway (Backend)
-1. Frontend (Vercel):
-   - Push your code to GitHub
-   - Connect your repository to Vercel
-   - Set environment variables in Vercel dashboard
-   - Deploy
-
-2. Backend (Railway):
-   - Push your code to GitHub
-   - Connect your repository to Railway
-   - Set environment variables in Railway dashboard
-   - Deploy
-
-#### Option 2: Deploy to Netlify (Frontend) + Heroku (Backend)
-1. Frontend (Netlify):
-   - Push your code to GitHub
-   - Connect your repository to Netlify
-   - Set environment variables in Netlify dashboard
-   - Deploy
-
-2. Backend (Heroku):
-   - Create a new Heroku app
-   - Push your code to Heroku
-   - Set environment variables in Heroku dashboard
-   - Deploy
-
-## Environment Variables
-
-### Backend (.env)
-```
-OPENAI_API_KEY=your_api_key_here
-```
-
-### Frontend (.env)
-```
-REACT_APP_BACKEND_URL=your_backend_url_here
-```
-
-## Development
-- Frontend runs on port 3000
-- Backend runs on port 8000
-- CORS is configured to allow all origins in development
-
-## Production
-- Update CORS settings in backend/main.py to only allow your frontend domain
-- Set appropriate environment variables
-- Enable HTTPS
-- Configure proper error handling and logging
+Feel free to submit issues and enhancement requests!
 
 ## License
-MIT License 
+
+This project is licensed under the MIT License - see the LICENSE file for details. 
