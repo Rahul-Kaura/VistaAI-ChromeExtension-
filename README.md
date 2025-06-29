@@ -1,134 +1,207 @@
-# AI/Stock Advisor(Fine Tuned)
+# StockAI Assistant - Dual-Mode AI Chatbot
 
-A sophisticated AI-powered application that combines stock market analysis with general AI assistance capabilities, featuring fine-tuned models for specialized responses.
+A sophisticated AI-powered application featuring a fine-tuned stock market advisor and general AI assistant with seamless mode switching capabilities.
 
-## Features
+## 🚀 Features
 
 ### Dual-Mode AI Assistant
-- **Stock Market Mode**: Specialized in providing professional financial analysis and stock market insights
-- **General AI Mode**: Friendly, conversational AI assistant for general queries and assistance
+- **📈 StockAI Assistant Mode**: Expert stock market advisor using fine-tuned GPT-3.5 model
+  - Professional financial analysis and insights
+  - Stock market trends and investment strategies
+  - Real-time stock data integration
+  - Specialized training on 300+ stocks and financial topics
+- **🤖 General AI Mode**: Friendly conversational AI assistant
+  - Natural language understanding
+  - Helpful responses to any topic
+  - Engaging dialogue capabilities
 
-### Live Stock Market Ticker
-- Real-time stock price updates for 50 major companies
-- Displays 9 stocks at a time with automatic cycling every 10 seconds
-- Shows current price, change, and percentage change
-- Color-coded indicators for positive (green) and negative (red) changes
-- Updates prices every 30 seconds
-- Automatically hides when chat is open
+### 🎯 Mode Switching
+- **Intuitive Toggle**: Mode switcher located in the top-right corner of the chat interface
+- **Context-Aware**: Automatic welcome messages and responses based on selected mode
+- **Visual Indicators**: Clear icons and labels for each mode (📈 Stock / 🤖 General)
+- **Seamless Transition**: Instant switching between modes with preserved chat history
 
-### Dynamic Background
-- Random wallpaper generation feature
-- Toggle between default and random backgrounds
-- Smooth transitions between backgrounds
+### 📊 Live Stock Market Features
+- **Real-time Stock Updates**: Live price data for major stocks (AAPL, GOOGL, MSFT, AMZN, TSLA, META)
+- **Interactive Widget**: Toggle stock updates widget (only available in Stock Mode)
+- **Price Tracking**: Current price, change amount, and percentage change
+- **Color-coded Display**: Green for gains, red for losses
+- **Auto-refresh**: Updates every 30 seconds
 
-### Chat Interface
-- Clean, modern chat interface
-- Real-time message updates
-- Loading indicators for AI responses
-- Easy mode switching between Stock and General AI
-- Automatic welcome messages based on selected mode
+### 🎨 Dynamic UI Features
+- **Random Wallpaper Generator**: Generate new backgrounds with one click
+- **Dark Theme**: Modern, professional dark interface
+- **Responsive Design**: Works seamlessly on all screen sizes
+- **Smooth Animations**: Polished transitions and loading indicators
 
-### Stock Market Analysis Features
-- Professional financial analysis
-- Market trends and insights
-- Investment strategies
-- Stock-specific metrics and analysis
-- Sector-wise market analysis
+### 💬 Chat Interface
+- **Modern Design**: Clean, intuitive chat interface
+- **Real-time Messaging**: Instant message updates
+- **Loading States**: Visual feedback during AI processing
+- **Auto-scroll**: Automatic scrolling to latest messages
+- **Avatar Support**: User and AI avatars for better UX
 
-### General AI Assistant Features
-- Friendly, conversational tone
-- Natural language understanding
-- Context-aware responses
-- Helpful suggestions and recommendations
-- Engaging dialogue capabilities
+## 🛠 Technical Architecture
 
-## Technical Details
+### Frontend (React.js)
+- **React 18** with modern hooks and functional components
+- **Material-UI** for consistent, professional UI components
+- **Axios** for API communication
+- **Real-time Updates** with useEffect and intervals
+- **Responsive Design** with CSS-in-JS styling
 
-### Frontend
-- Built with React.js
-- Material-UI components
-- Real-time stock data integration with Alpha Vantage API
-- Responsive design for all screen sizes
+### Backend (Python/FastAPI)
+- **FastAPI** for high-performance API endpoints
+- **OpenAI Integration** with fine-tuned models
+- **Context-Aware Routing** for different AI modes
+- **Error Handling** with comprehensive logging
+- **CORS Support** for cross-origin requests
 
-### Backend
-- Python-based backend
-- OpenAI API integration
-- Fine-tuned models for both stock market and general assistance
-- Efficient data caching and management
+### AI Models
+- **Fine-tuned Stock Advisor**: Custom GPT-3.5 model trained on financial data
+- **General AI**: Standard GPT-3.5-turbo for general queries
+- **Context Switching**: Dynamic model selection based on user mode
 
-### API Integration
-- Alpha Vantage API for real-time stock data
-- OpenAI API for AI responses
-- Rate limiting and error handling
+### API Integrations
+- **OpenAI API**: For AI responses and fine-tuned model access
+- **Alpha Vantage API**: For real-time stock market data
+- **Rate Limiting**: Built-in protection against API limits
 
-## Getting Started
+## 🚀 Getting Started
 
-1. Clone the repository
-2. Install dependencies:
+### Prerequisites
+- Node.js (v14 or higher)
+- Python (v3.8 or higher)
+- OpenAI API key
+- Alpha Vantage API key
+
+### Installation
+
+1. **Clone the repository**
    ```bash
-   # Backend
+   git clone https://github.com/Rahul-Kaura/ai-stock-advisor.git
+   cd ai-stock-advisor
+   ```
+
+2. **Backend Setup**
+   ```bash
    cd backend
    pip install -r requirements.txt
+   
+   # Create .env file
+   echo "OPENAI_API_KEY=your_openai_api_key" > .env
+   echo "ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key" >> .env
+   ```
 
-   # Frontend
+3. **Frontend Setup**
+   ```bash
    cd frontend
    npm install
    ```
-3. Set up environment variables:
-   - Create a `.env` file in the backend directory
-   - Add your API keys:
-     ```
-     OPENAI_API_KEY=your_openai_api_key
-     ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
-     ```
-4. Start the application:
+
+### Running the Application
+
+1. **Start Backend Server**
    ```bash
-   # Backend
    cd backend
    python main.py
+   ```
+   Server runs on `http://localhost:8001`
 
-   # Frontend
+2. **Start Frontend Development Server**
+   ```bash
    cd frontend
    npm start
    ```
+   Application opens at `http://localhost:3000`
 
-## Usage
+## 📖 Usage Guide
 
-1. **Stock Market Mode**
-   - Click "Stock Market Mode" to access financial analysis
-   - Ask questions about stocks, market trends, or investment strategies
-   - View real-time stock updates in the ticker
+### Switching Between Modes
+1. **Open the Chat**: Click the AI Assistant icon on the main screen
+2. **Locate Mode Switcher**: Find the toggle in the top-right corner of the chat
+3. **Switch Modes**: Toggle between "Stock" and "General" modes
+4. **Start Chatting**: The AI will respond based on the selected mode
 
-2. **General AI Mode**
-   - Click "General AI Mode" for general assistance
-   - Engage in natural conversation
-   - Get helpful responses to various queries
+### Stock Market Mode
+- Ask about specific stocks: "Tell me about Apple stock"
+- Get investment advice: "What are good investment strategies?"
+- Market analysis: "What's happening in the tech sector?"
+- Financial education: "Explain P/E ratios"
 
-3. **Stock Ticker**
-   - Click "Show Stock Updates" to view the live ticker
-   - Watch as it cycles through different stocks
-   - Monitor price changes in real-time
+### General AI Mode
+- General questions: "What's the weather like?"
+- Help with tasks: "Help me plan a vacation"
+- Learning: "Explain quantum physics"
+- Casual conversation: "Tell me a joke"
 
-4. **Background**
-   - Click "Generate Random Wallpaper" for a new background
-   - Toggle between default and random backgrounds
+### Stock Widget (Stock Mode Only)
+- Click "Show Stock Updates" on the main screen
+- View real-time prices for major stocks
+- Monitor price changes and percentages
+- Widget automatically hides when chat is open
 
-## Recent Updates
+### Background Customization
+- Click "Generate Random Wallpaper" for new backgrounds
+- Toggle between default and random backgrounds
+- Smooth transitions between background changes
 
-- Added dual-mode AI assistant functionality
-- Implemented live stock market ticker with cycling display
-- Added dynamic background generation
-- Enhanced chat interface with mode switching
-- Improved stock market analysis capabilities
-- Added friendly, conversational general AI mode
-- Implemented automatic hiding of stock ticker when chat is open
-- Added real-time price updates for stocks
-- Enhanced UI/UX with smooth transitions and loading indicators
+## 🔧 Configuration
 
-## Contributing
+### Environment Variables
+```bash
+# Backend (.env file)
+OPENAI_API_KEY=your_openai_api_key
+ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
+PORT=8001
 
-Feel free to submit issues and enhancement requests!
+# Frontend (.env file)
+REACT_APP_API_URL=http://localhost:8001
+```
 
-## License
+### Customization Options
+- **Stock Symbols**: Modify `STOCK_SYMBOLS` array in `frontend/src/App.js`
+- **API Endpoints**: Update `API_ENDPOINT` in frontend configuration
+- **UI Theme**: Customize colors in Material-UI theme configuration
+- **Update Intervals**: Adjust stock refresh timing in the frontend
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+## 📈 Recent Updates
+
+### Latest Features (v2.0)
+- ✅ **Dual-Mode AI Assistant** with fine-tuned stock advisor
+- ✅ **Intuitive Mode Switching** in chat interface
+- ✅ **Live Stock Market Widget** with real-time updates
+- ✅ **Dynamic Background Generation**
+- ✅ **Enhanced Chat Interface** with modern design
+- ✅ **Context-Aware Responses** based on selected mode
+- ✅ **Professional Stock Analysis** with fine-tuned model
+- ✅ **Responsive Design** for all devices
+
+### Technical Improvements
+- 🔧 **Fine-tuned Model Integration** for specialized stock advice
+- 🔧 **Context-Aware API Routing** for different AI modes
+- 🔧 **Real-time Stock Data** integration
+- 🔧 **Error Handling** and rate limiting
+- 🔧 **Performance Optimization** with efficient state management
+
+## 🤝 Contributing
+
+We welcome contributions! Please feel free to:
+- Submit bug reports and feature requests
+- Fork the repository and create pull requests
+- Improve documentation and code quality
+- Add new features and enhancements
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👨‍💻 Author
+
+**Rahul Kaura**
+- GitHub: [@Rahul-Kaura](https://github.com/Rahul-Kaura)
+- Project: [AI Stock Advisor](https://github.com/Rahul-Kaura/ai-stock-advisor)
+
+---
+
+**Built with ❤️ using React, Python, and OpenAI's fine-tuned models** 
