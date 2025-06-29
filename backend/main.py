@@ -35,7 +35,7 @@ client = OpenAI(api_key=openai.api_key)
 
 class ChatRequest(BaseModel):
     message: str
-    context: str = "stock"  # Can be either "stock" or "general"
+    context: Optional[str] = "stock_market"  # Default to stock market mode
 
 class ChatResponse(BaseModel):
     response: str
@@ -44,15 +44,15 @@ class ChatResponse(BaseModel):
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     try:
-        logger.info(f"Received message: {request.message} in context: {request.context}")
+        logger.info(f"Received message: {request.message} with context: {request.context}")
         
-        # Select model and system message based on context
-        if request.context == "stock":
-            model = "ft:gpt-3.5-turbo-0125:personal:stock-advisor:BjVreaRO"
+        # Determine which model and system message to use based on context
+        if request.context == "stock_market":
+            model = "ft:gpt-3.5-turbo-0125:personal:stock-advisor:BjVreaRO"  # Fine-tuned stock advisor
             system_message = "You are a knowledgeable stock market advisor. Provide accurate and helpful information about stocks, investing, and market analysis while maintaining appropriate disclaimers about financial advice."
-        else:  # general context
-            model = "gpt-3.5-turbo"
-            system_message = "You are a helpful AI assistant. Provide accurate and helpful information while maintaining a friendly and professional tone."
+        else:
+            model = "gpt-3.5-turbo"  # General AI model
+            system_message = "You are a helpful AI assistant. Provide accurate and helpful information on any topic while being friendly and engaging."
         
         # Create chat completion
         try:
@@ -107,5 +107,5 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.getenv("PORT", "8000"))
+    port = int(os.getenv("PORT", "8001"))
     uvicorn.run(app, host="0.0.0.0", port=port) 

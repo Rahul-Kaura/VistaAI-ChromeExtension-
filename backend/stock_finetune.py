@@ -1,23 +1,23 @@
-import os
 import json
+import os
 from dotenv import load_dotenv
 from openai import OpenAI
-from expanded_stock_data import EXPANDED_STOCK_TRAINING_CONVERSATIONS
+from stock_training_data import STOCK_TRAINING_CONVERSATIONS
 
 # Load environment variables
 load_dotenv()
 
 def prepare_stock_training_data(conversations):
-    """
-    Prepare conversations for fine-tuning.
-    Each conversation should be a list of messages with 'role' and 'content'.
-    """
-    return [{"messages": [{"role": m["role"], "content": m["content"]} for m in conv["messages"]]} for conv in conversations]
+    """Prepare stock market focused training data for fine-tuning."""
+    training_data = []
+    for conversation in conversations:
+        training_data.append({
+            "messages": conversation["messages"]
+        })
+    return training_data
 
 def create_stock_fine_tuning_file(training_data, output_file="stock_training_data.jsonl"):
-    """
-    Create a JSONL file for fine-tuning.
-    """
+    """Create a JSONL file for stock market fine-tuning."""
     with open(output_file, 'w') as f:
         for item in training_data:
             f.write(json.dumps(item) + '\n')
@@ -46,7 +46,13 @@ def create_stock_fine_tuning_job(file_id, model="gpt-3.5-turbo"):
 def check_stock_fine_tuning_status(job_id):
     """Check the status of a fine-tuning job."""
     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-    return client.fine_tuning.jobs.retrieve(job_id).status
+    try:
+        job = client.fine_tuning.jobs.retrieve(job_id)
+        print(f"Job details: {job}")
+        return job.status
+    except Exception as e:
+        print(f"Error checking status: {str(e)}")
+        return None
 
 if __name__ == "__main__":
     # Verify API key is set
@@ -56,7 +62,7 @@ if __name__ == "__main__":
         exit(1)
         
     # Prepare the training data
-    training_data = prepare_stock_training_data(EXPANDED_STOCK_TRAINING_CONVERSATIONS)
+    training_data = prepare_stock_training_data(STOCK_TRAINING_CONVERSATIONS)
     
     # Create the fine-tuning file
     training_file = create_stock_fine_tuning_file(training_data)
