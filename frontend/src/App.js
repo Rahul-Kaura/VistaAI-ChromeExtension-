@@ -2,11 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Box, Typography, TextField, IconButton, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Switch, FormControlLabel } from '@mui/material';
+import { Box, Typography, TextField, IconButton, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Switch, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from '@mui/icons-material/Close';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import EditIcon from '@mui/icons-material/Edit';
 
 const theme = createTheme({
   palette: {
@@ -36,12 +39,24 @@ function App() {
   const [backgroundUrl, setBackgroundUrl] = useState('');
   const [showStockWidget, setShowStockWidget] = useState(false);
   const [currentStocks, setCurrentStocks] = useState([]);
+  
+  // New personalization states
+  const [userName, setUserName] = useState('');
+  const [showNameInput, setShowNameInput] = useState(true);
+  const [location] = useState('San Francisco, CA');
+  const [showTodoDialog, setShowTodoDialog] = useState(false);
+  const [todos, setTodos] = useState([
+    { id: 1, text: 'Review stock portfolio', completed: false },
+    { id: 2, text: 'Check market trends', completed: false },
+    { id: 3, text: 'Update investment strategy', completed: false }
+  ]);
+  const [newTodo, setNewTodo] = useState('');
 
   useEffect(() => {
     if (!welcomeShown.current) {
       const welcomeMessage = isStockMode 
-        ? 'Welcome to StockAI Assistant! I\'m your expert stock market advisor. Ask me about stocks, investing strategies, market analysis, or any financial topics. How can I help you today?'
-        : 'Welcome to General AI Assistant! I\'m here to help with any questions you might have. What would you like to know?';
+        ? `Welcome ${userName ? userName + '!' : 'to StockAI Assistant!'} I'm your expert stock market advisor. Ask me about stocks, investing strategies, market analysis, or any financial topics. How can I help you today?`
+        : `Welcome ${userName ? userName + '!' : 'to General AI Assistant!'} I'm here to help with any questions you might have. What would you like to know?`;
       
       setMessages([{
         text: welcomeMessage,
@@ -54,7 +69,7 @@ function App() {
     generateStockPrices();
     const interval = setInterval(generateStockPrices, 30000); // Update every 30 seconds
     return () => clearInterval(interval);
-  }, [isStockMode]);
+  }, [isStockMode, userName]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -97,6 +112,46 @@ function App() {
       }));
       setCurrentStocks(mockStocks);
     }
+  };
+
+  // New personalization functions
+  const handleNameSubmit = (e) => {
+    e.preventDefault();
+    if (userName.trim()) {
+      setShowNameInput(false);
+      // Update welcome message with new name
+      const welcomeMessage = isStockMode 
+        ? `Welcome ${userName}! I'm your expert stock market advisor. Ask me about stocks, investing strategies, market analysis, or any financial topics. How can I help you today?`
+        : `Welcome ${userName}! I'm here to help with any questions you might have. What would you like to know?`;
+      
+      setMessages([{
+        text: welcomeMessage,
+        sender: 'ai',
+        avatar: defaultAvatar
+      }]);
+      welcomeShown.current = true;
+    }
+  };
+
+  const handleEditName = () => {
+    setShowNameInput(true);
+  };
+
+  const addTodo = () => {
+    if (newTodo.trim()) {
+      setTodos([...todos, { id: Date.now(), text: newTodo.trim(), completed: false }]);
+      setNewTodo('');
+    }
+  };
+
+  const toggleTodo = (id) => {
+    setTodos(todos.map(todo => 
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
+  };
+
+  const deleteTodo = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
   };
 
   const handleSubmit = async (e) => {
@@ -145,8 +200,8 @@ function App() {
     setIsStockMode(!isStockMode);
     // Clear messages and show new welcome message
     const welcomeMessage = !isStockMode 
-      ? 'Welcome to StockAI Assistant! I\'m your expert stock market advisor. Ask me about stocks, investing strategies, market analysis, or any financial topics. How can I help you today?'
-      : 'Welcome to General AI Assistant! I\'m here to help with any questions you might have. What would you like to know?';
+      ? `Welcome ${userName ? userName + '!' : 'to StockAI Assistant!'} I'm your expert stock market advisor. Ask me about stocks, investing strategies, market analysis, or any financial topics. How can I help you today?`
+      : `Welcome ${userName ? userName + '!' : 'to General AI Assistant!'} I'm here to help with any questions you might have. What would you like to know?`;
     
     setMessages([{
       text: welcomeMessage,
@@ -158,6 +213,23 @@ function App() {
 
   const toggleStockWidget = () => {
     setShowStockWidget(!showStockWidget);
+  };
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+    if (!isOpen && !welcomeShown.current && userName) {
+      // Show personalized welcome message when opening chat for the first time
+      const welcomeMessage = isStockMode 
+        ? `Welcome ${userName}! I'm your expert stock market advisor. Ask me about stocks, investing strategies, market analysis, or any financial topics. How can I help you today?`
+        : `Welcome ${userName}! I'm here to help with any questions you might have. What would you like to know?`;
+      
+      setMessages([{
+        text: welcomeMessage,
+        sender: 'ai',
+        avatar: defaultAvatar
+      }]);
+      welcomeShown.current = true;
+    }
   };
 
   return (
@@ -178,6 +250,25 @@ function App() {
         position: 'relative',
         overflow: 'hidden'
       }}>
+        {/* Location Display - Top Left */}
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          left: '20px',
+          display: isOpen ? 'none' : 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          color: 'white',
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          padding: '10px 15px',
+          borderRadius: '20px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          zIndex: 1000
+        }}>
+          <LocationOnIcon style={{ fontSize: '1.2rem', color: '#4CAF50' }} />
+          <span style={{ fontSize: '1rem', fontWeight: '500' }}>{location}</span>
+        </div>
+
         <h1 style={{
           color: 'rgb(236, 236, 241)',
           marginBottom: '2rem',
@@ -190,6 +281,85 @@ function App() {
         }}>
           {isStockMode ? 'StockAI Assistant' : 'AI Assistant'}
         </h1>
+
+        {/* Name Input Section - Center */}
+        {showNameInput && !isOpen && (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '15px',
+            marginBottom: '2rem',
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            padding: '20px',
+            borderRadius: '15px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            minWidth: '300px'
+          }}>
+            <Typography variant="h6" style={{ color: 'white', margin: 0 }}>
+              Welcome! What's your name?
+            </Typography>
+            <form onSubmit={handleNameSubmit} style={{ display: 'flex', gap: '10px', width: '100%' }}>
+              <TextField
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                placeholder="Enter your name"
+                variant="outlined"
+                size="small"
+                style={{ flex: 1 }}
+                InputProps={{
+                  style: { 
+                    color: 'white',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px'
+                  }
+                }}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={!userName.trim()}
+                style={{ minWidth: '80px' }}
+              >
+                Start
+              </Button>
+            </form>
+          </div>
+        )}
+
+        {/* Welcome Message with Name - Center */}
+        {!showNameInput && !isOpen && userName && (
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '10px',
+            marginBottom: '2rem',
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            padding: '20px',
+            borderRadius: '15px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            minWidth: '300px'
+          }}>
+            <Typography variant="h5" style={{ color: 'white', margin: 0, textAlign: 'center' }}>
+              Welcome back, {userName}! 👋
+            </Typography>
+            <Button
+              onClick={handleEditName}
+              variant="outlined"
+              size="small"
+              startIcon={<EditIcon />}
+              style={{ 
+                color: 'white', 
+                borderColor: 'rgba(255, 255, 255, 0.3)',
+                fontSize: '0.8rem'
+              }}
+            >
+              Change Name
+            </Button>
+          </div>
+        )}
         <button
           onClick={() => setIsOpen(!isOpen)}
           style={{
@@ -230,6 +400,40 @@ function App() {
           fontWeight: '500'
         }}>
           (Personal Chatbot V1)
+        </div>
+
+        {/* To-Do Button - Bottom Right */}
+        <div style={{
+          position: 'fixed',
+          bottom: '30px',
+          right: '30px',
+          display: isOpen ? 'none' : 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '10px',
+          zIndex: '1000',
+        }}>
+          <Button
+            onClick={() => setShowTodoDialog(true)}
+            variant="contained"
+            color="secondary"
+            startIcon={<CheckBoxIcon />}
+            style={{
+              backgroundColor: 'rgba(156, 39, 176, 0.8)',
+              color: 'white',
+              padding: '12px 20px',
+              borderRadius: '25px',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              minWidth: '140px',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
+            }}
+          >
+            To-Do List
+          </Button>
+          <Typography variant="caption" style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem' }}>
+            {todos.filter(t => !t.completed).length} tasks pending
+          </Typography>
         </div>
 
         <div style={{
@@ -504,6 +708,133 @@ function App() {
             ))}
           </div>
         )}
+
+        {/* To-Do Dialog */}
+        <Dialog 
+          open={showTodoDialog} 
+          onClose={() => setShowTodoDialog(false)}
+          maxWidth="sm"
+          fullWidth
+          PaperProps={{
+            style: {
+              backgroundColor: 'rgb(52, 53, 65)',
+              color: 'white',
+              borderRadius: '15px'
+            }
+          }}
+        >
+          <DialogTitle style={{ 
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <span>📋 To-Do List</span>
+            <IconButton 
+              onClick={() => setShowTodoDialog(false)}
+              style={{ color: 'white' }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          
+          <DialogContent style={{ paddingTop: '20px' }}>
+            {/* Add New Todo */}
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+              <TextField
+                value={newTodo}
+                onChange={(e) => setNewTodo(e.target.value)}
+                placeholder="Add a new task..."
+                variant="outlined"
+                size="small"
+                fullWidth
+                InputProps={{
+                  style: { 
+                    color: 'white',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    borderRadius: '8px'
+                  }
+                }}
+                onKeyPress={(e) => e.key === 'Enter' && addTodo()}
+              />
+              <Button
+                onClick={addTodo}
+                variant="contained"
+                color="primary"
+                disabled={!newTodo.trim()}
+                style={{ minWidth: '80px' }}
+              >
+                Add
+              </Button>
+            </div>
+
+            {/* Todo List */}
+            <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              {todos.length === 0 ? (
+                <Typography style={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.6)', fontStyle: 'italic' }}>
+                  No tasks yet. Add one above!
+                </Typography>
+              ) : (
+                todos.map((todo) => (
+                  <div key={todo.id} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '10px',
+                    marginBottom: '8px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}>
+                    <CheckBoxIcon 
+                      onClick={() => toggleTodo(todo.id)}
+                      style={{ 
+                        cursor: 'pointer',
+                        color: todo.completed ? '#4CAF50' : 'rgba(255, 255, 255, 0.6)',
+                        fontSize: '1.2rem'
+                      }}
+                    />
+                    <span style={{
+                      flex: 1,
+                      textDecoration: todo.completed ? 'line-through' : 'none',
+                      color: todo.completed ? 'rgba(255, 255, 255, 0.6)' : 'white',
+                      fontSize: '0.9rem'
+                    }}>
+                      {todo.text}
+                    </span>
+                    <IconButton
+                      onClick={() => deleteTodo(todo.id)}
+                      size="small"
+                      style={{ 
+                        color: '#f44336',
+                        padding: '4px'
+                      }}
+                    >
+                      <CloseIcon style={{ fontSize: '1rem' }} />
+                    </IconButton>
+                  </div>
+                ))
+              )}
+            </div>
+          </DialogContent>
+          
+          <DialogActions style={{ 
+            padding: '15px 20px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
+            <Button 
+              onClick={() => setShowTodoDialog(false)}
+              variant="outlined"
+              style={{ 
+                color: 'white', 
+                borderColor: 'rgba(255, 255, 255, 0.3)'
+              }}
+            >
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <style jsx>{`
           .rcw-widget-container {
             background-color: rgb(52, 53, 65) !important;
