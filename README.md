@@ -41,6 +41,12 @@ A sophisticated AI-powered application featuring a fine-tuned stock market advis
 - **Auto-scroll**: Automatic scrolling to latest messages
 - **Avatar Support**: User and AI avatars for better UX
 
+### 🏷️ Personalization Features
+- **Name Input**: Personalized welcome with user's name in the center
+- **Location Display**: Current location shown in top-left corner
+- **To-Do List**: Interactive task management system in bottom-right
+- **Customizable Experience**: Edit name and manage tasks anytime
+
 ## 🛠 Technical Architecture
 
 ### Frontend (React.js)
@@ -75,7 +81,7 @@ A sophisticated AI-powered application featuring a fine-tuned stock market advis
 - OpenAI API key
 - Alpha Vantage API key
 
-### Installation
+### Local Development
 
 1. **Clone the repository**
    ```bash
@@ -99,7 +105,7 @@ A sophisticated AI-powered application featuring a fine-tuned stock market advis
    npm install
    ```
 
-### Running the Application
+### Running Locally
 
 1. **Start Backend Server**
    ```bash
@@ -114,6 +120,55 @@ A sophisticated AI-powered application featuring a fine-tuned stock market advis
    npm start
    ```
    Application opens at `http://localhost:3000`
+
+## 🌐 Deployment (No Cursor Required!)
+
+### Deploy to Render (Recommended)
+
+**Render** is a cloud platform that can host your application without needing Cursor or any local development environment. Your app will run automatically in the cloud!
+
+#### 1. **Prepare Your Repository**
+- Ensure all changes are committed to GitHub
+- Make sure your `render.yaml` file is in the root directory
+- Verify your backend has the required endpoints (`/health`, `/`)
+
+#### 2. **Set Up Render Account**
+- Go to [render.com](https://render.com) and create an account
+- Connect your GitHub account
+- Select your `ai-stock-advisor` repository
+
+#### 3. **Configure Environment Variables**
+In Render dashboard, set these environment variables:
+```bash
+OPENAI_API_KEY=your_openai_api_key
+ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
+```
+
+#### 4. **Deploy Automatically**
+- Render will automatically detect your `render.yaml` configuration
+- It will build and deploy both backend and frontend
+- Your app will be available at the provided URLs
+
+#### 5. **Access Your Deployed App**
+- **Backend API**: `https://ai-stock-advisor-backend.onrender.com`
+- **Frontend App**: `https://ai-stock-advisor-frontend.onrender.com`
+
+### Alternative Deployment Options
+
+#### Railway
+- Similar to Render, supports Python and Node.js
+- Automatic deployments from GitHub
+- Built-in environment variable management
+
+#### Heroku
+- Classic platform for web apps
+- Supports both Python and Node.js
+- Free tier available (with limitations)
+
+#### Vercel (Frontend Only)
+- Excellent for React applications
+- Automatic deployments
+- Global CDN
 
 ## 📖 Usage Guide
 
@@ -146,6 +201,12 @@ A sophisticated AI-powered application featuring a fine-tuned stock market advis
 - Toggle between default and random backgrounds
 - Smooth transitions between background changes
 
+### Personalization Features
+- **Name Setup**: Enter your name when first visiting the app
+- **Location Display**: See your location in the top-left corner
+- **Task Management**: Click the purple "To-Do List" button to manage tasks
+- **Edit Profile**: Change your name anytime with the edit button
+
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -156,7 +217,8 @@ ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
 PORT=8001
 
 # Frontend (.env file)
-REACT_APP_API_URL=http://localhost:8001
+REACT_APP_API_URL=http://localhost:8001  # For local development
+REACT_APP_API_URL=https://your-backend-url.onrender.com  # For production
 ```
 
 ### Customization Options
@@ -166,6 +228,13 @@ REACT_APP_API_URL=http://localhost:8001
 - **Update Intervals**: Adjust stock refresh timing in the frontend
 
 ## 📈 Recent Updates
+
+### Latest Features (v2.1)
+- ✅ **Personalization System** with name input and location display
+- ✅ **Interactive To-Do List** with task management
+- ✅ **Enhanced User Experience** with personalized welcome messages
+- ✅ **Deployment Ready** with Render configuration
+- ✅ **Health Check Endpoints** for production monitoring
 
 ### Latest Features (v2.0)
 - ✅ **Dual-Mode AI Assistant** with fine-tuned stock advisor
@@ -183,6 +252,7 @@ REACT_APP_API_URL=http://localhost:8001
 - 🔧 **Real-time Stock Data** integration
 - 🔧 **Error Handling** and rate limiting
 - 🔧 **Performance Optimization** with efficient state management
+- 🔧 **Production Deployment** configuration
 
 ## 🤝 Contributing
 
@@ -204,4 +274,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ using React, Python, and OpenAI's fine-tuned models** 
+**Built with ❤️ using React, Python, and OpenAI's fine-tuned models**
+
+**🚀 Deploy to Render and run without Cursor!** 

@@ -41,6 +41,16 @@ class ChatResponse(BaseModel):
     response: str
     avatar_url: str = "https://raw.githubusercontent.com/rahulraina7/ai-pitch-advisor/main/frontend/public/logo192.png"
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Render deployment"""
+    return {"status": "healthy", "message": "AI Stock Advisor API is running"}
+
+@app.get("/")
+async def root():
+    """Root endpoint"""
+    return {"message": "AI Stock Advisor API", "status": "running"}
+
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     try:
