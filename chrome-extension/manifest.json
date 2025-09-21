@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "AI Pitch Advisor",
+  "version": "1.0.0",
+  "description": "AI-powered pitch advisor with timelapse backgrounds and stock analysis",
+  "permissions": [
+    "storage",
+    "geolocation",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://api.openai.com/*",
+    "https://images.unsplash.com/*",
+    "https://picsum.photos/*",
+    "https://wttr.in/*",
+    "https://api.bigdatacloud.net/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI Pitch Advisor"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["13403997_1920_1080_24fps.mp4", "gpt_logo.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
