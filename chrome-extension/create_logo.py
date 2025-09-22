@@ -1,46 +1,106 @@
 #!/usr/bin/env python3
 """
-Create a simple VistaAI logo for Chrome extension
+Create a sophisticated VistaAI logo inspired by OpenAI but unique
 """
 from PIL import Image, ImageDraw, ImageFont
 import os
+import math
 
 def create_vista_logo(output_path, size=128):
-    """Create a simple VistaAI logo with 'VA' text"""
-    # Create a blue background image
-    img = Image.new('RGBA', (size, size), (66, 133, 244, 255))  # Google Blue
+    """Create a sophisticated VistaAI logo with AI-inspired design"""
+    # Create a transparent background
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     
-    # Try to use a common font, fallback if not found
+    center = size // 2
+    radius = int(size * 0.4)
+    
+    # Create gradient-like effect with multiple circles
+    for i in range(5):
+        alpha = 255 - (i * 40)
+        r = radius - (i * 8)
+        if r > 0:
+            # Outer ring - dark teal
+            draw.ellipse([center-r, center-r, center+r, center+r], 
+                        fill=(0, 100, 120, alpha//3), outline=None)
+    
+    # Main circle - gradient from teal to blue
+    for i in range(radius, 0, -2):
+        alpha = 200 - (radius - i) * 2
+        if alpha > 0:
+            # Gradient from teal to blue
+            ratio = i / radius
+            r = int(20 + (66 - 20) * (1 - ratio))
+            g = int(100 + (133 - 100) * (1 - ratio))
+            b = int(120 + (244 - 120) * (1 - ratio))
+            draw.ellipse([center-i, center-i, center+i, center+i], 
+                        fill=(r, g, b, alpha), outline=None)
+    
+    # Inner AI-inspired geometric pattern
+    inner_radius = int(radius * 0.6)
+    
+    # Draw hexagon (AI/tech theme)
+    hex_points = []
+    for i in range(6):
+        angle = math.pi * i / 3
+        x = center + inner_radius * math.cos(angle)
+        y = center + inner_radius * math.sin(angle)
+        hex_points.append((x, y))
+    
+    # Fill hexagon with gradient
+    for i in range(inner_radius, 0, -3):
+        alpha = 150 - (inner_radius - i) * 3
+        if alpha > 0:
+            ratio = i / inner_radius
+            r = int(100 + (255 - 100) * (1 - ratio))
+            g = int(150 + (255 - 150) * (1 - ratio))
+            b = int(255)
+            draw.ellipse([center-i, center-i, center+i, center+i], 
+                        fill=(r, g, b, alpha), outline=None)
+    
+    # Draw hexagon outline
+    draw.polygon(hex_points, fill=None, outline=(255, 255, 255, 200), width=2)
+    
+    # Add central "V" for Vista
     try:
-        # Try different font sizes
-        font_size = int(size * 0.6)
+        font_size = int(size * 0.4)
         font = ImageFont.truetype("/System/Library/Fonts/Arial.ttf", font_size)
     except (IOError, OSError):
         try:
             font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttf", font_size)
         except (IOError, OSError):
             font = ImageFont.load_default()
-            print("Warning: Using default font")
     
-    text = "VA"
-    
-    # Calculate text position to center it
+    text = "V"
     bbox = draw.textbbox((0, 0), text, font=font)
     text_width = bbox[2] - bbox[0]
     text_height = bbox[3] - bbox[1]
     
-    x = (size - text_width) / 2
-    y = (size - text_height) / 2 - 5  # Adjust slightly for visual centering
+    x = center - text_width // 2
+    y = center - text_height // 2 - 2
     
-    # Draw white text "VA"
-    draw.text((x, y), text, fill=(255, 255, 255, 255), font=font)
+    # Draw white "V" with subtle shadow
+    draw.text((x+1, y+1), text, fill=(0, 0, 0, 100), font=font)  # Shadow
+    draw.text((x, y), text, fill=(255, 255, 255, 255), font=font)  # Main text
     
-    # Add a subtle border
-    draw.rectangle([0, 0, size-1, size-1], outline=(255, 255, 255, 100), width=2)
+    # Add small AI dots around the hexagon
+    dot_radius = int(size * 0.03)
+    for i in range(6):
+        angle = math.pi * i / 3
+        dot_x = center + (inner_radius + 15) * math.cos(angle)
+        dot_y = center + (inner_radius + 15) * math.sin(angle)
+        draw.ellipse([dot_x-dot_radius, dot_y-dot_radius, dot_x+dot_radius, dot_y+dot_radius], 
+                    fill=(255, 255, 255, 180))
+    
+    # Add subtle glow effect
+    for i in range(3):
+        glow_radius = radius + 5 + i * 3
+        alpha = 30 - i * 10
+        draw.ellipse([center-glow_radius, center-glow_radius, center+glow_radius, center+glow_radius], 
+                    fill=(100, 200, 255, alpha), outline=None)
     
     img.save(output_path, 'PNG')
-    print(f"✅ Logo created at {output_path}")
+    print(f"✅ VistaAI logo created at {output_path}")
 
 def create_all_sizes():
     """Create logos in all required sizes"""
