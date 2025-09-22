@@ -57,27 +57,45 @@ def create_vista_logo(output_path, size=128):
     # Draw hexagon outline
     draw.polygon(hex_points, fill=None, outline=(255, 255, 255), width=2)
     
-    # Add central "V" for Vista
+    # Add central "V" for Vista - make it much larger and more visible
     try:
-        font_size = int(size * 0.4)
+        font_size = int(size * 0.6)  # Increased from 0.4 to 0.6
         font = ImageFont.truetype("/System/Library/Fonts/Arial.ttf", font_size)
+        
+        text = "V"
+        bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+        
+        x = center - text_width // 2
+        y = center - text_height // 2 - 2
+        
+        # Draw white "V" with bold shadow for better visibility
+        draw.text((x+2, y+2), text, fill=(0, 0, 0), font=font)  # Bold shadow
+        draw.text((x+1, y+1), text, fill=(0, 0, 0), font=font)  # Additional shadow
+        draw.text((x, y), text, fill=(255, 255, 255), font=font)  # Main text
+        
     except (IOError, OSError):
-        try:
-            font = ImageFont.truetype("/System/Library/Fonts/Helvetica.ttf", font_size)
-        except (IOError, OSError):
-            font = ImageFont.load_default()
-    
-    text = "V"
-    bbox = draw.textbbox((0, 0), text, font=font)
-    text_width = bbox[2] - bbox[0]
-    text_height = bbox[3] - bbox[1]
-    
-    x = center - text_width // 2
-    y = center - text_height // 2 - 2
-    
-    # Draw white "V" with subtle shadow
-    draw.text((x+1, y+1), text, fill=(0, 0, 0), font=font)  # Shadow
-    draw.text((x, y), text, fill=(255, 255, 255), font=font)  # Main text
+        # Fallback: Draw "V" manually with lines
+        v_width = int(size * 0.3)
+        v_height = int(size * 0.4)
+        v_x = center - v_width // 2
+        v_y = center - v_height // 2
+        
+        # Draw "V" shape with thick white lines
+        line_width = max(3, int(size * 0.05))
+        
+        # Left side of V
+        draw.line([(v_x, v_y), (v_x + v_width//4, v_y + v_height)], 
+                 fill=(0, 0, 0), width=line_width+2)  # Shadow
+        draw.line([(v_x, v_y), (v_x + v_width//4, v_y + v_height)], 
+                 fill=(255, 255, 255), width=line_width)  # Main line
+        
+        # Right side of V
+        draw.line([(v_x + v_width*3//4, v_y + v_height), (v_x + v_width, v_y)], 
+                 fill=(0, 0, 0), width=line_width+2)  # Shadow
+        draw.line([(v_x + v_width*3//4, v_y + v_height), (v_x + v_width, v_y)], 
+                 fill=(255, 255, 255), width=line_width)  # Main line
     
     # Add small AI dots around the hexagon
     dot_radius = int(size * 0.03)
