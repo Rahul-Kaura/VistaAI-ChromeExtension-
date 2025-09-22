@@ -8,8 +8,8 @@ import math
 
 def create_vista_logo(output_path, size=128):
     """Create a sophisticated VistaAI logo with AI-inspired design"""
-    # Create a transparent background
-    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    # Create a solid dark background for better toolbar visibility
+    img = Image.new('RGBA', (size, size), (20, 30, 50, 255))  # Dark blue background
     draw = ImageDraw.Draw(img)
     
     center = size // 2
@@ -22,11 +22,11 @@ def create_vista_logo(output_path, size=128):
         if r > 0:
             # Outer ring - dark teal
             draw.ellipse([center-r, center-r, center+r, center+r], 
-                        fill=(0, 100, 120, alpha//3), outline=None)
+                        fill=(0, 100, 120, alpha), outline=None)
     
     # Main circle - gradient from teal to blue
     for i in range(radius, 0, -2):
-        alpha = 200 - (radius - i) * 2
+        alpha = 255 - (radius - i) * 2
         if alpha > 0:
             # Gradient from teal to blue
             ratio = i / radius
@@ -49,7 +49,7 @@ def create_vista_logo(output_path, size=128):
     
     # Fill hexagon with gradient
     for i in range(inner_radius, 0, -3):
-        alpha = 150 - (inner_radius - i) * 3
+        alpha = 255 - (inner_radius - i) * 3
         if alpha > 0:
             ratio = i / inner_radius
             r = int(100 + (255 - 100) * (1 - ratio))
@@ -95,7 +95,7 @@ def create_vista_logo(output_path, size=128):
     # Add subtle glow effect
     for i in range(3):
         glow_radius = radius + 5 + i * 3
-        alpha = 30 - i * 10
+        alpha = 50 - i * 15
         draw.ellipse([center-glow_radius, center-glow_radius, center+glow_radius, center+glow_radius], 
                     fill=(100, 200, 255, alpha), outline=None)
     
