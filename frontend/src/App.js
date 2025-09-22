@@ -37,9 +37,9 @@ function App() {
   const welcomeShown = useRef(false);
   const defaultAvatar = "./gpt_logo.png";
   const [backgroundUrl, setBackgroundUrl] = useState('');
-  const [isTimelapseMode, setIsTimelapseMode] = useState(true);
+  const [isOriginalMode, setIsOriginalMode] = useState(true);
   const [showStockWidget, setShowStockWidget] = useState(false);
-  const [isVideoBackground, setIsVideoBackground] = useState(false);
+  const [isAIHidden, setIsAIHidden] = useState(false);
   const [currentStocks, setCurrentStocks] = useState([]);
   
   // New personalization states
@@ -137,43 +137,36 @@ function App() {
     scrollToBottom();
   }, [messages]);
 
-  // Initialize timelapse wallpaper on component mount
-  useEffect(() => {
-    if (isTimelapseMode) {
-      const timelapseUrl = getTimelapseWallpaper();
-      console.log('Setting timelapse wallpaper:', timelapseUrl);
-      setBackgroundUrl(timelapseUrl);
-      setWallpaperLocation('Golden Gate Bridge, San Francisco');
-    }
-  }, [isTimelapseMode]);
 
-  // Set up video timelapse on app start
+  // Set up original wallpaper on app start
   useEffect(() => {
-    console.log('Setting up video timelapse...');
-    setIsVideoBackground(true);
+    console.log('Setting up original wallpaper...');
+    setIsOriginalMode(true);
+    
+    // Use a direct Golden Gate Bridge image URL - this should definitely work
+    const ggbUrl = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80';
+    console.log('Setting Golden Gate Bridge URL:', ggbUrl);
+    
+    // Force set the background immediately
+    setBackgroundUrl(ggbUrl);
     setWallpaperLocation('Golden Gate Bridge, San Francisco');
+    
+    // Force reload after a short delay
+    setTimeout(() => {
+      console.log('Force reloading Golden Gate Bridge...');
+      setBackgroundUrl(ggbUrl + '&t=' + Date.now());
+    }, 500);
   }, []);
 
-  // Update timelapse wallpaper every hour
-  useEffect(() => {
-    if (isTimelapseMode) {
-      const interval = setInterval(() => {
-        setBackgroundUrl(getTimelapseWallpaper());
-      }, 60 * 60 * 1000); // Update every hour
 
-      return () => clearInterval(interval);
-    }
-  }, [isTimelapseMode]);
-
-  const getTimelapseWallpaper = () => {
-    // Return the local MP4 video file for timelapse mode
-    return './13403997_1920_1080_24fps.mp4';
+  const getOriginalWallpaper = () => {
+    // Return a reliable Golden Gate Bridge with fog image
+    return 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80&t=1234567890';
   };
 
   const generateRandomWallpaper = async () => {
-    // Switch to manual wallpaper mode
-    setIsTimelapseMode(false);
-    setIsVideoBackground(false);
+    // Switch to new wallpaper mode
+    setIsOriginalMode(false);
     
     // Use Lorem Picsum for reliable random wallpapers
     const randomId = Math.floor(Math.random() * 1000) + 1;
@@ -198,11 +191,20 @@ function App() {
     setWallpaperLocation(randomLocation);
   };
 
-  const switchToTimelapse = () => {
-    console.log('Switching to timelapse mode...');
-    setIsTimelapseMode(true);
-    setIsVideoBackground(true);
+  const switchToOriginal = () => {
+    console.log('Switching to original mode...');
+    setIsOriginalMode(true);
+    
+    // Force set Golden Gate Bridge image
+    const ggbUrl = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80';
+    console.log('Switching to Golden Gate Bridge URL:', ggbUrl);
+    setBackgroundUrl(ggbUrl);
     setWallpaperLocation('Golden Gate Bridge, San Francisco');
+    
+    // Force reload
+    setTimeout(() => {
+      setBackgroundUrl(ggbUrl + '&t=' + Date.now());
+    }, 100);
   };
 
   const testGoldenGateBridge = () => {
@@ -649,53 +651,15 @@ function App() {
         justifyContent: 'flex-start',
         paddingTop: isOpen ? '0' : '5vh',
         backgroundColor: 'rgb(52, 53, 65)',
-        backgroundImage: !isVideoBackground && backgroundUrl ? `url(${backgroundUrl})` : 'none',
+        backgroundImage: isOriginalMode 
+          ? 'url(https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80)' 
+          : backgroundUrl ? `url(${backgroundUrl})` : 'none',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         position: 'relative',
         overflow: 'hidden'
       }}>
-        {/* Video Background for Timelapse */}
-        {isVideoBackground && (
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: -1,
-            overflow: 'hidden'
-          }}>
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                transform: 'translate(-50%, -50%)',
-                minWidth: '100%',
-                minHeight: '100%'
-              }}
-              onError={(e) => {
-                console.error('Video failed to load:', e);
-                // Fallback to image if video fails
-                setIsVideoBackground(false);
-                setBackgroundUrl('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
-              }}
-            >
-              <source src="./13403997_1920_1080_24fps.mp4" type="video/mp4" />
-              <source src="/13403997_1920_1080_24fps.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        )}
 
         {/* Location & Weather Display - Top Right */}
         <div style={{
@@ -787,6 +751,40 @@ function App() {
             }}
           >
             {isPlayingAudio ? 'PLAYING...' : 'LOCK IN'}
+          </button>
+
+          {/* Hide/Show AI Button */}
+          <button
+            onClick={() => setIsAIHidden(!isAIHidden)}
+            style={{
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              color: 'white',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              padding: '8px 16px',
+              fontSize: '0.8rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              opacity: 0.8,
+              transition: 'all 0.3s ease-in-out',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              minWidth: '80px',
+              textAlign: 'center',
+              backdropFilter: 'blur(5px)',
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.opacity = '1';
+              e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+              e.target.style.transform = 'scale(1.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.opacity = '0.8';
+              e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+              e.target.style.transform = 'scale(1)';
+            }}
+          >
+            {isAIHidden ? 'SHOW AI' : 'HIDE AI'}
           </button>
         </div>
 
@@ -1008,7 +1006,7 @@ function App() {
         )}
 
         {/* Search Bar - Bottom Left */}
-        {!isOpen && (
+        {!isOpen && !isAIHidden && (
           <div style={{
             position: 'fixed',
             bottom: '30px',
@@ -1188,6 +1186,8 @@ function App() {
           gap: '8px',
           zIndex: '1000',
         }}>
+
+
           {/* Wallpaper Mode Flip Slider */}
           <div style={{
             display: 'flex',
@@ -1205,7 +1205,7 @@ function App() {
             <div style={{
               position: 'absolute',
               top: '3px',
-              left: isTimelapseMode ? '3px' : '50%',
+              left: isOriginalMode ? '3px' : '50%',
               width: '50%',
               height: 'calc(100% - 6px)',
               backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -1214,13 +1214,13 @@ function App() {
               zIndex: 1
             }} />
             
-            {/* Timelapse Button */}
+            {/* Original Button */}
             <button
-              onClick={switchToTimelapse}
+              onClick={switchToOriginal}
               style={{
                 flex: 1,
                 backgroundColor: 'transparent',
-                color: isTimelapseMode ? 'white' : 'rgba(255, 255, 255, 0.6)',
+                color: isOriginalMode ? 'white' : 'rgba(255, 255, 255, 0.6)',
                 border: 'none',
                 borderRadius: '17px',
                 padding: '6px 12px',
@@ -1233,16 +1233,16 @@ function App() {
                 position: 'relative'
               }}
             >
-              Timelapse
+              Original
             </button>
             
-            {/* Random Button */}
+            {/* New Button */}
             <button
               onClick={generateRandomWallpaper}
               style={{
                 flex: 1,
                 backgroundColor: 'transparent',
-                color: !isTimelapseMode ? 'white' : 'rgba(255, 255, 255, 0.6)',
+                color: !isOriginalMode ? 'white' : 'rgba(255, 255, 255, 0.6)',
                 border: 'none',
                 borderRadius: '17px',
                 padding: '6px 12px',
@@ -1255,7 +1255,7 @@ function App() {
                 position: 'relative'
               }}
             >
-              Random
+              New
             </button>
           </div>
           
@@ -1332,7 +1332,7 @@ function App() {
           
         </div>
 
-        {isOpen && (
+        {isOpen && !isAIHidden && (
           <Paper
             elevation={3}
             style={{

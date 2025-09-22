@@ -1,115 +1,82 @@
-# AI Pitch Advisor Chrome Extension
+# AI Pitch Advisor - Chrome Extension
 
-A powerful Chrome extension that provides AI-powered pitch advice with beautiful timelapse backgrounds and stock analysis capabilities.
+A powerful AI-powered new tab page that combines business intelligence, motivational tools, and productivity features.
 
-## Features
+## 🌟 Features
 
-- 🎬 **Timelapse Background**: Beautiful MP4 video background that loops continuously
-- 🤖 **AI-Powered**: General AI mode for pitch advice and stock analysis mode
-- 🎤 **Voice Input**: Speech-to-text functionality for hands-free interaction
-- 📷 **Image Upload**: Support for image attachments (coming soon)
-- 🔥 **Motivational Audio**: David Goggins-inspired motivational quotes
-- 💾 **Persistent Storage**: Remembers your preferences and name
+- **AI Chat Interface**: General AI assistance and stock market insights
+- **Motivational Tools**: David Goggins audio clips and LOCK IN mode
+- **Dynamic Wallpapers**: Golden Gate Bridge and random backgrounds
+- **Weather & Location**: Real-time weather and location data
+- **Voice Input**: Speech-to-text for easy interaction
+- **Image Upload**: Attach images for AI analysis
+- **To-Do List**: Personal task management
+- **Flip Clock**: Beautiful time display
+- **Hide/Show AI**: Toggle AI interface visibility
 
-## Installation
+## 🚀 Installation
 
-### Method 1: Load as Unpacked Extension (Development)
+1. **Enable Developer Mode**:
+   - Go to `chrome://extensions/`
+   - Toggle "Developer mode" ON
 
-1. Open Chrome and go to `chrome://extensions/`
-2. Enable "Developer mode" in the top right
-3. Click "Load unpacked"
-4. Select the `chrome-extension` folder
-5. The extension will appear in your extensions bar
+2. **Load Extension**:
+   - Click "Load unpacked"
+   - Select this `chrome-extension` folder
+   - Click "Select Folder"
 
-### Method 2: Package and Install
+3. **Enjoy**:
+   - Open a new tab to see your AI Pitch Advisor!
 
-1. Go to `chrome://extensions/`
-2. Click "Pack extension"
-3. Select the `chrome-extension` folder
-4. Click "Pack Extension"
-5. Install the generated `.crx` file
+## 📁 Files
 
-## Usage
+- `manifest.json` - Extension configuration
+- `newtab.html` - New tab page HTML
+- `static/` - Compiled React app assets
+- `gpt_logo.png` - Extension icon
+- `13403997_1920_1080_24fps.mp4` - Timelapse video
+- `INSTALL.md` - Detailed installation guide
 
-1. **Click the extension icon** in your Chrome toolbar
-2. **Choose your mode**:
-   - **General**: AI pitch advice and general assistance
-   - **Stock**: Stock market analysis and financial advice
-3. **Ask questions** using the search bar
-4. **Use voice input** by clicking the microphone button
-5. **Get motivated** with the "LOCK IN" button for David Goggins quotes
+## 🔧 Configuration
 
-## File Structure
+### API Keys
+For full AI functionality, you'll need:
+- OpenAI API key for chat features
+- Optional: Weather and location APIs
 
-```
-chrome-extension/
-├── manifest.json          # Extension configuration
-├── popup.html             # Main popup interface
-├── popup.js               # Popup functionality
-├── background.js          # Background service worker
-├── 13403997_1920_1080_24fps.mp4  # Timelapse video
-├── gpt_logo.png           # Logo image
-└── README.md              # This file
-```
+### Customization
+- Toggle between "Original" and "New" wallpapers
+- Switch between General AI and Stock mode
+- Use HIDE AI button to minimize interface
+- LOCK IN for motivational audio
 
-## Permissions
+## 🎯 Usage
 
-- **storage**: Save user preferences and data
-- **geolocation**: Get user location for weather (optional)
-- **activeTab**: Access current tab for enhanced functionality
-- **host_permissions**: Access to external APIs (OpenAI, Unsplash, etc.)
+1. **New Tab**: Automatically loads the AI Pitch Advisor
+2. **Search**: Type or use voice input in the search bar
+3. **Modes**: Toggle between General and Stock AI
+4. **Wallpapers**: Switch between Original and New backgrounds
+5. **Motivation**: Click LOCK IN for David Goggins audio
+6. **Hide AI**: Use HIDE AI button to minimize interface
 
-## Development
+## 🛠️ Development
 
-To modify the extension:
+Built with:
+- React 17
+- Material-UI
+- Axios for API calls
+- Chrome Extension Manifest V3
 
-1. Edit the files in the `chrome-extension` folder
-2. Go to `chrome://extensions/`
-3. Click the refresh button on the extension
-4. Test your changes
+## 📱 Browser Support
 
-## Publishing to Chrome Web Store
+- Chrome (recommended)
+- Edge (Chromium-based)
+- Other Chromium-based browsers
 
-1. **Prepare your extension**:
-   - Ensure all files are in the `chrome-extension` folder
-   - Test thoroughly in development mode
-   - Create a compelling store listing
+## 🐛 Troubleshooting
 
-2. **Create a Chrome Web Store developer account**:
-   - Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole/)
-   - Pay the one-time $5 registration fee
-   - Verify your identity
-
-3. **Package your extension**:
-   - Zip the entire `chrome-extension` folder
-   - Make sure `manifest.json` is in the root of the zip
-
-4. **Upload to Chrome Web Store**:
-   - Go to the developer dashboard
-   - Click "Add new item"
-   - Upload your zip file
-   - Fill out the store listing details
-   - Submit for review
-
-## Store Listing Requirements
-
-- **Extension name**: AI Pitch Advisor
-- **Description**: Clear, compelling description of features
-- **Screenshots**: 1-5 screenshots showing the extension in action
-- **Icon**: 128x128px icon for the store
-- **Category**: Productivity or Business
-- **Privacy policy**: Required for extensions that collect data
-
-## Troubleshooting
-
-- **Video not playing**: Ensure the MP4 file is in the extension folder
-- **Voice not working**: Check microphone permissions
-- **Storage issues**: Clear extension data in Chrome settings
-
-## Support
-
-For issues or feature requests, please contact the development team.
+See `INSTALL.md` for detailed troubleshooting steps.
 
 ---
 
-**Ready to dominate? Install the AI Pitch Advisor extension and take your pitches to the next level!** 🚀
+**Ready to transform your new tab experience?** 🚀

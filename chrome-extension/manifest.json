@@ -1,13 +1,18 @@
 {
   "manifest_version": 3,
-  "name": "AI Pitch Advisor",
+  "name": "AI Pitch Advisor - New Tab",
   "version": "1.0.0",
-  "description": "AI-powered pitch advisor with timelapse backgrounds and stock analysis",
+  "description": "Transform your new tab into an AI-powered productivity hub with business insights, motivational tools, weather data, and beautiful wallpapers.",
+  
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  
   "permissions": [
     "storage",
-    "geolocation",
-    "activeTab"
+    "geolocation"
   ],
+  
   "host_permissions": [
     "https://api.openai.com/*",
     "https://images.unsplash.com/*",
@@ -15,20 +20,21 @@
     "https://wttr.in/*",
     "https://api.bigdatacloud.net/*"
   ],
-  "action": {
-    "default_popup": "popup.html",
-    "default_title": "AI Pitch Advisor"
-  },
-  "background": {
-    "service_worker": "background.js"
-  },
+  
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
+    "extension_pages": "script-src 'self'; object-src 'self';"
   },
+  
   "web_accessible_resources": [
     {
-      "resources": ["13403997_1920_1080_24fps.mp4", "gpt_logo.png"],
+      "resources": ["static/*", "gpt_logo.png", "13403997_1920_1080_24fps.mp4", "asset-manifest.json", "loading.css"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  
+  "icons": {
+    "16": "gpt_logo.png",
+    "48": "gpt_logo.png",
+    "128": "gpt_logo.png"
+  }
 }
