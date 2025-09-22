@@ -1,9 +1,9 @@
-# AI Pitch Advisor - Chrome Extension Installation
+# VistaAI (Chrome Extension) Installation
 
 ## 🚀 Quick Installation
 
 ### Step 1: Enable Developer Mode
-1. Open Chrome and go to `chrome://extensions/`
+1. Open Chrome and go to `Wchrome://extensions/`
 2. Toggle **"Developer mode"** ON (top right corner)
 
 ### Step 2: Load the Extension
@@ -13,7 +13,7 @@
 
 ### Step 3: Set as New Tab Page
 1. The extension will automatically override your new tab page
-2. Open a new tab to see your AI Pitch Advisor!
+2. Open a new tab to see your VistaAI!
 
 ## 🎯 Features
 
@@ -58,7 +58,7 @@ For full functionality, add your API keys:
 
 ## 📱 Usage
 
-1. **Open New Tab**: Automatically loads the AI Pitch Advisor
+1. **Open New Tab**: Automatically loads the VistaAI
 2. **Ask Anything**: Type in the search bar or use voice input
 3. **Switch Modes**: Toggle between General and Stock AI
 4. **Lock In**: Click for motivational audio

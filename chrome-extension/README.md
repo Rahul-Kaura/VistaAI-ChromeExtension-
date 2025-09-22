@@ -1,4 +1,4 @@
-# AI Pitch Advisor - Chrome Extension
+# VistaAI (Chrome Extension)
 
 A powerful AI-powered new tab page that combines business intelligence, motivational tools, and productivity features.
 
@@ -26,7 +26,7 @@ A powerful AI-powered new tab page that combines business intelligence, motivati
    - Click "Select Folder"
 
 3. **Enjoy**:
-   - Open a new tab to see your AI Pitch Advisor!
+   - Open a new tab to see your VistaAI!
 
 ## 📁 Files
 
@@ -52,7 +52,7 @@ For full AI functionality, you'll need:
 
 ## 🎯 Usage
 
-1. **New Tab**: Automatically loads the AI Pitch Advisor
+1. **New Tab**: Automatically loads the VistaAI
 2. **Search**: Type or use voice input in the search bar
 3. **Modes**: Toggle between General and Stock AI
 4. **Wallpapers**: Switch between Original and New backgrounds

@@ -155,4 +155,4 @@ Create a simple privacy policy covering:
 
 ---
 
-**Ready to launch your AI Pitch Advisor on the Chrome Web Store!** 🚀
+**Ready to launch your VistaAI (Chrome Extension) on the Chrome Web Store!** 🚀
