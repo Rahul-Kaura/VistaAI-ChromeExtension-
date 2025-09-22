@@ -270,7 +270,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Rahul Kaura**
 - GitHub: [@Rahul-Kaura](https://github.com/Rahul-Kaura)
-- Project: [AI Stock Advisor](https://github.com/Rahul-Kaura/ai-stock-advisor)
+- Project: [AI Stock Advisor](https://github.com/Rahul-Kaura/VistaAI-ChromeExtension)
 
 ---
 
