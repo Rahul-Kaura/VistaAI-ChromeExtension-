@@ -7,31 +7,59 @@ import os
 import math
 
 def create_vista_logo(output_path, size=128):
-    """Create a simple, reliable VistaAI logo that works in Chrome extensions"""
-    # Create a solid background - use RGB instead of RGBA for better compatibility
-    img = Image.new('RGB', (size, size), (66, 133, 244))  # Google Blue background
+    """Create a sophisticated VistaAI logo with AI-inspired design"""
+    # Create a solid background - use RGB for better compatibility
+    img = Image.new('RGB', (size, size), (20, 30, 50))  # Dark blue background
     draw = ImageDraw.Draw(img)
     
     center = size // 2
-    radius = int(size * 0.35)
+    radius = int(size * 0.4)
     
-    # Draw a simple circle with gradient effect
+    # Create gradient-like effect with multiple circles
+    for i in range(5):
+        alpha = 255 - (i * 40)
+        r = radius - (i * 8)
+        if r > 0:
+            # Outer ring - dark teal
+            draw.ellipse([center-r, center-r, center+r, center+r], 
+                        fill=(0, 100, 120), outline=None)
+    
+    # Main circle - gradient from teal to blue
     for i in range(radius, 0, -2):
-        # Create gradient from outer to inner
+        # Gradient from teal to blue
         ratio = i / radius
-        r = int(66 + (255 - 66) * (1 - ratio))
-        g = int(133 + (255 - 133) * (1 - ratio))
-        b = int(244 + (255 - 244) * (1 - ratio))
+        r = int(20 + (66 - 20) * (1 - ratio))
+        g = int(100 + (133 - 100) * (1 - ratio))
+        b = int(120 + (244 - 120) * (1 - ratio))
         draw.ellipse([center-i, center-i, center+i, center+i], 
                     fill=(r, g, b), outline=None)
     
-    # Add a white border
-    draw.ellipse([center-radius, center-radius, center+radius, center+radius], 
-                fill=None, outline=(255, 255, 255), width=3)
+    # Inner AI-inspired geometric pattern
+    inner_radius = int(radius * 0.6)
+    
+    # Draw hexagon (AI/tech theme)
+    hex_points = []
+    for i in range(6):
+        angle = math.pi * i / 3
+        x = center + inner_radius * math.cos(angle)
+        y = center + inner_radius * math.sin(angle)
+        hex_points.append((x, y))
+    
+    # Fill hexagon with gradient
+    for i in range(inner_radius, 0, -3):
+        ratio = i / inner_radius
+        r = int(100 + (255 - 100) * (1 - ratio))
+        g = int(150 + (255 - 150) * (1 - ratio))
+        b = int(255)
+        draw.ellipse([center-i, center-i, center+i, center+i], 
+                    fill=(r, g, b), outline=None)
+    
+    # Draw hexagon outline
+    draw.polygon(hex_points, fill=None, outline=(255, 255, 255), width=2)
     
     # Add central "V" for Vista
     try:
-        font_size = int(size * 0.5)
+        font_size = int(size * 0.4)
         font = ImageFont.truetype("/System/Library/Fonts/Arial.ttf", font_size)
     except (IOError, OSError):
         try:
@@ -47,18 +75,25 @@ def create_vista_logo(output_path, size=128):
     x = center - text_width // 2
     y = center - text_height // 2 - 2
     
-    # Draw white "V" with shadow for better visibility
-    draw.text((x+2, y+2), text, fill=(0, 0, 0), font=font)  # Shadow
+    # Draw white "V" with subtle shadow
+    draw.text((x+1, y+1), text, fill=(0, 0, 0), font=font)  # Shadow
     draw.text((x, y), text, fill=(255, 255, 255), font=font)  # Main text
     
-    # Add small dots around the circle for AI theme
-    dot_radius = max(2, int(size * 0.04))
-    for i in range(8):
-        angle = math.pi * i / 4
-        dot_x = center + (radius + 8) * math.cos(angle)
-        dot_y = center + (radius + 8) * math.sin(angle)
+    # Add small AI dots around the hexagon
+    dot_radius = int(size * 0.03)
+    for i in range(6):
+        angle = math.pi * i / 3
+        dot_x = center + (inner_radius + 15) * math.cos(angle)
+        dot_y = center + (inner_radius + 15) * math.sin(angle)
         draw.ellipse([dot_x-dot_radius, dot_y-dot_radius, dot_x+dot_radius, dot_y+dot_radius], 
                     fill=(255, 255, 255))
+    
+    # Add subtle glow effect
+    for i in range(3):
+        glow_radius = radius + 5 + i * 3
+        alpha = 50 - i * 15
+        draw.ellipse([center-glow_radius, center-glow_radius, center+glow_radius, center+glow_radius], 
+                    fill=(100, 200, 255), outline=None)
     
     # Save as PNG with RGB mode
     img.save(output_path, 'PNG')
