@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VistaAI Logo Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        button { padding: 10px 20px; margin: 10px; background: #4285F4; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>VistaAI Logo Generator</h2>
+    <p>Click the button below to generate and download the VistaAI logo:</p>
+    
+    <canvas id="logo128" width="128" height="128"></canvas>
+    <canvas id="logo48" width="48" height="48"></canvas>
+    <canvas id="logo16" width="16" height="16"></canvas>
+    
+    <br>
+    <button onclick="generateAndDownload()">Generate & Download VistaAI Logo</button>
+    
+    <script>
+        function drawLogo(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            const center = size / 2;
+            const radius = size * 0.4;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Background circle
+            ctx.beginPath();
+            ctx.arc(center, center, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = '#000000';
+            ctx.fill();
+            
+            // Red segment
+            ctx.beginPath();
+            ctx.arc(center, center, radius, -Math.PI/2, Math.PI/6);
+            ctx.lineTo(center, center);
+            ctx.fillStyle = '#EA4335';
+            ctx.fill();
+            
+            // Yellow segment
+            ctx.beginPath();
+            ctx.arc(center, center, radius, Math.PI/6, 5*Math.PI/6);
+            ctx.lineTo(center, center);
+            ctx.fillStyle = '#FBBC04';
+            ctx.fill();
+            
+            // Teal segment
+            ctx.beginPath();
+            ctx.arc(center, center, radius, 5*Math.PI/6, -Math.PI/2);
+            ctx.lineTo(center, center);
+            ctx.fillStyle = '#34A853';
+            ctx.fill();
+            
+            // Inner circle
+            ctx.beginPath();
+            ctx.arc(center, center, radius * 0.4, 0, 2 * Math.PI);
+            ctx.fillStyle = '#4285F4';
+            ctx.fill();
+            
+            // Highlight
+            ctx.beginPath();
+            ctx.arc(center - radius * 0.1, center - radius * 0.1, radius * 0.15, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fill();
+        }
+        
+        function generateAndDownload() {
+            // Generate logos
+            drawLogo(document.getElementById('logo128'), 128);
+            drawLogo(document.getElementById('logo48'), 48);
+            drawLogo(document.getElementById('logo16'), 16);
+            
+            // Download 128px version
+            const canvas128 = document.getElementById('logo128');
+            const link128 = document.createElement('a');
+            link128.download = 'vista-ai-logo-128.png';
+            link128.href = canvas128.toDataURL('image/png');
+            link128.click();
+            
+            // Download 48px version
+            setTimeout(() => {
+                const canvas48 = document.getElementById('logo48');
+                const link48 = document.createElement('a');
+                link48.download = 'vista-ai-logo-48.png';
+                link48.href = canvas48.toDataURL('image/png');
+                link48.click();
+            }, 500);
+            
+            // Download 16px version
+            setTimeout(() => {
+                const canvas16 = document.getElementById('logo16');
+                const link16 = document.createElement('a');
+                link16.download = 'vista-ai-logo-16.png';
+                link16.href = canvas16.toDataURL('image/png');
+                link16.click();
+            }, 1000);
+        }
+        
+        // Generate logos on page load
+        window.onload = function() {
+            drawLogo(document.getElementById('logo128'), 128);
+            drawLogo(document.getElementById('logo48'), 48);
+            drawLogo(document.getElementById('logo16'), 16);
+        };
+    </script>
+</body>
+</html>

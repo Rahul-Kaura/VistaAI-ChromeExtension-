@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VistaAI Logo Generator</title>
+</head>
+<body>
+    <canvas id="logoCanvas" width="128" height="128" style="border: 1px solid #ccc;"></canvas>
+    <br><br>
+    <button onclick="downloadLogo()">Download VistaAI Logo</button>
+    
+    <script>
+        function createVistaLogo() {
+            const canvas = document.getElementById('logoCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, 128, 128);
+            
+            // Background circle
+            ctx.beginPath();
+            ctx.arc(64, 64, 60, 0, 2 * Math.PI);
+            ctx.fillStyle = '#000000';
+            ctx.fill();
+            
+            // Red segment (top-right)
+            ctx.beginPath();
+            ctx.arc(64, 64, 60, -Math.PI/2, Math.PI/6);
+            ctx.lineTo(64, 64);
+            ctx.fillStyle = '#EA4335';
+            ctx.fill();
+            
+            // Yellow segment (bottom-right)
+            ctx.beginPath();
+            ctx.arc(64, 64, 60, Math.PI/6, 5*Math.PI/6);
+            ctx.lineTo(64, 64);
+            ctx.fillStyle = '#FBBC04';
+            ctx.fill();
+            
+            // Teal segment (left)
+            ctx.beginPath();
+            ctx.arc(64, 64, 60, 5*Math.PI/6, -Math.PI/2);
+            ctx.lineTo(64, 64);
+            ctx.fillStyle = '#34A853';
+            ctx.fill();
+            
+            // Inner circle (lens)
+            ctx.beginPath();
+            ctx.arc(64, 64, 25, 0, 2 * Math.PI);
+            const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 25);
+            gradient.addColorStop(0, '#4285F4');
+            gradient.addColorStop(1, '#1A73E8');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            // Highlight
+            ctx.beginPath();
+            ctx.arc(58, 58, 8, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.fill();
+        }
+        
+        function downloadLogo() {
+            const canvas = document.getElementById('logoCanvas');
+            const link = document.createElement('a');
+            link.download = 'vista-ai-logo-128.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Create logo on page load
+        createVistaLogo();
+    </script>
+</body>
+</html>
