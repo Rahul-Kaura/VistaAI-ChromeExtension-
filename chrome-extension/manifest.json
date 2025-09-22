@@ -27,14 +27,14 @@
   
   "web_accessible_resources": [
     {
-      "resources": ["static/*", "vista-ai-logo.png", "13403997_1920_1080_24fps.mp4", "asset-manifest.json", "loading.css"],
+      "resources": ["static/*", "vista-ai-logo-16.png", "vista-ai-logo-48.png", "vista-ai-logo-128.png", "vista-ai-logo.png", "13403997_1920_1080_24fps.mp4", "asset-manifest.json", "loading.css"],
       "matches": ["<all_urls>"]
     }
   ],
   
   "icons": {
-    "16": "vista-ai-logo.png",
-    "48": "vista-ai-logo.png",
-    "128": "vista-ai-logo.png"
+    "16": "vista-ai-logo-16.png",
+    "48": "vista-ai-logo-48.png",
+    "128": "vista-ai-logo-128.png"
   }
 }
