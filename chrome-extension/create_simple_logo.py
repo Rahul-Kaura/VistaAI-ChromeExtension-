@@ -7,16 +7,16 @@ import os
 
 def create_simple_logo(size=128):
     """Create a very simple logo that Chrome will definitely accept"""
-    # Create a solid blue background
-    img = Image.new('RGB', (size, size), (66, 133, 244))  # Google Blue
+    # Create a solid blue background - make it brighter for toolbar visibility
+    img = Image.new('RGB', (size, size), (33, 150, 243))  # Brighter blue
     draw = ImageDraw.Draw(img)
     
-    # Draw a white circle in the center
+    # Draw a white circle in the center with a blue border
     margin = size // 8
     draw.ellipse([margin, margin, size-margin, size-margin], 
-                fill=(255, 255, 255), outline=(0, 0, 0), width=2)
+                fill=(255, 255, 255), outline=(33, 150, 243), width=3)
     
-    # Draw a simple "V" using lines
+    # Draw a simple "V" using lines - make it blue and thicker
     center = size // 2
     v_size = size // 3
     
@@ -25,18 +25,20 @@ def create_simple_logo(size=128):
     right_x = center + v_size // 2
     top_y = center - v_size // 2
     bottom_y = center + v_size // 2
-    mid_y = center
     
     # Draw V shape with thick lines
-    line_width = max(2, size // 16)
+    line_width = max(3, size // 12)  # Thicker lines
     
     # Left diagonal
     draw.line([(left_x, top_y), (center, bottom_y)], 
-             fill=(66, 133, 244), width=line_width)
+             fill=(33, 150, 243), width=line_width)
     
     # Right diagonal  
     draw.line([(center, bottom_y), (right_x, top_y)], 
-             fill=(66, 133, 244), width=line_width)
+             fill=(33, 150, 243), width=line_width)
+    
+    # Add a subtle border around the entire logo for better visibility
+    draw.rectangle([0, 0, size-1, size-1], outline=(255, 255, 255), width=1)
     
     return img
 
