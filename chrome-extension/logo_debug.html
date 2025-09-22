@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VistaAI Logo Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .logo-test {
+            margin: 20px;
+            padding: 20px;
+            background: #333;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .logo-test img {
+            border: 2px solid #666;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .size-label {
+            font-weight: bold;
+            color: #64b5f6;
+            margin: 5px 0;
+        }
+        .error {
+            color: #ff6b6b;
+            background: #4a1a1a;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 VistaAI Logo Debug</h1>
+    <p>Testing if logo files are loading correctly:</p>
+    
+    <div class="logo-test">
+        <div class="size-label">16px Logo</div>
+        <img src="vista-ai-logo-16.png" alt="16px Logo" style="width: 64px; height: 64px;" 
+             onerror="this.parentNode.innerHTML+='<div class=error>❌ 16px logo failed to load</div>'">
+        <img src="vista-ai-logo-16.png" alt="16px Actual Size" style="width: 16px; height: 16px;"
+             onerror="this.parentNode.innerHTML+='<div class=error>❌ 16px logo failed to load</div>'">
+    </div>
+    
+    <div class="logo-test">
+        <div class="size-label">48px Logo</div>
+        <img src="vista-ai-logo-48.png" alt="48px Logo" style="width: 96px; height: 96px;"
+             onerror="this.parentNode.innerHTML+='<div class=error>❌ 48px logo failed to load</div>'">
+        <img src="vista-ai-logo-48.png" alt="48px Actual Size" style="width: 48px; height: 48px;"
+             onerror="this.parentNode.innerHTML+='<div class=error>❌ 48px logo failed to load</div>'">
+    </div>
+    
+    <div class="logo-test">
+        <div class="size-label">128px Logo</div>
+        <img src="vista-ai-logo-128.png" alt="128px Logo" style="width: 128px; height: 128px;"
+             onerror="this.parentNode.innerHTML+='<div class=error>❌ 128px logo failed to load</div>'">
+    </div>
+    
+    <div class="logo-test">
+        <div class="size-label">Main Logo</div>
+        <img src="vista-ai-logo.png" alt="Main Logo" style="width: 128px; height: 128px;"
+             onerror="this.parentNode.innerHTML+='<div class=error>❌ Main logo failed to load</div>'">
+    </div>
+    
+    <p><strong>If you see error messages above, the logo files aren't loading properly.</strong></p>
+    <p><strong>If you see blue squares with white circles and blue V's, the logos are working!</strong></p>
+</body>
+</html>
