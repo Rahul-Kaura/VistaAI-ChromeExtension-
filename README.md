@@ -1,4 +1,6 @@
-# StockAI Assistant - Dual-Mode AI Chatbot
+# VistaAI Assistant - Dual-Mode AI Chatbot
+
+https://chromewebstore.google.com/detail/oilnohhkbdkbpjeohmbgepnjpjdalgip?utm_source=item-share-cb
 
 A sophisticated AI-powered application featuring a fine-tuned stock market advisor and general AI assistant with seamless mode switching capabilities.
 
